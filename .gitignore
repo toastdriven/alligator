@@ -1,0 +1,10 @@
+.DS_Store
+*.pyc
+
+*.egg-info
+build
+dist
+env
+htmlcov
+
+.coverage
