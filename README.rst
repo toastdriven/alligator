@@ -14,6 +14,22 @@ Requirements
 * **FUTURE** (Optional) ``beanstalkc`` for the Beanstalk backend
 
 
+WHY?!!1!
+--------
+
+Because I have NIH-syndrome.
+
+Or because I longed for something simple (~375 loc).
+
+Or because I wanted something with tests (90%+ coverage) & docs (soon).
+
+Or because I wanted pluggable backends.
+
+Or because testing some other queuing system was a pain.
+
+Or because I'm an idiot.
+
+
 Basic Usage
 -----------
 
@@ -62,11 +78,17 @@ You can use it with any Python code.
 Running Tasks
 -------------
 
+Rather than trying to do autodiscovery, fanout, etc., you control how your
+workers are configured & what they consumer. Create a new executable file
+(bin script, management command, whatever) & drop in the following code.
+
 .. code:: python
 
     from alligator import Gator, Worker
 
+    # Bonus points if you import that one pre-configured ``Gator`` instead.
     gator = Gator('redis://localhost:6379/0')
+
     # Consume & handle all tasks.
     worker = Worker(gator)
     worker.run_forever()
