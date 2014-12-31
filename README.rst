@@ -11,14 +11,16 @@ Requirements
 
 * Python 2.6+ or Python 3.3+
 * (Optional) ``redis`` for the Redis backend
-* (Optional) ``beanstalkc`` for the Beanstalk backend
+* **FUTURE** (Optional) ``beanstalkc`` for the Beanstalk backend
 
 
 Basic Usage
 -----------
 
 This example uses Django, but there's nothing Django-specific about Alligator.
-You can use it with any Python code.::
+You can use it with any Python code.
+
+.. code:: python
 
     from alligator import Gator
 
@@ -60,7 +62,7 @@ You can use it with any Python code.::
 Running Tasks
 -------------
 
-::
+.. code:: python
 
     from alligator import Gator, Worker
 
@@ -79,7 +81,7 @@ New BSD
 Complex Usage (For Future Docs)
 -------------------------------
 
-::
+.. code:: python
 
     # We're re-using the above imports/setup.
 
@@ -92,6 +94,9 @@ Complex Usage (For Future Docs)
     with gator.options(retries=3, async=settings.ASYNC_TASKS, on_error=log_func) as task:
         feeds_job = task(sketchy_fetch_feeds, timeout=30)
 
+
+    # Future wishlist items...
+
     # Dependent tasks, will only run if the listed tasks succeed.
     with gator.options(depends_on=[feeds_job]) as task:
         task(rebuild_cache)
@@ -101,10 +106,22 @@ Complex Usage (For Future Docs)
         task(this_can_wait)
 
 
+Running Tests
+-------------
+
+::
+
+    $ virtualenv env2
+    $ . env2/bin/activate
+    $ pip install -r requirements.txt
+    $ python setup.py develop
+    $ py.test -s -v --cov=alligator --cov-report=html tests
+
+
 TODO
 ----
 
-* Tests
 * Docs
 * Scheduled tasks
+* Dependent tasks
 * Cancellable tasks
