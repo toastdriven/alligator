@@ -60,6 +60,7 @@ class Client(object):
         cls.queues.setdefault(queue_name, [])
         cls.queues[queue_name].append(task_id)
         cls.task_data[task_id] = data
+        return task_id
 
     def pop(self, queue_name):
         """

@@ -1,4 +1,4 @@
-import redis
+import beanstalkc
 
 try:
     from urllib.parse import urlparse
@@ -9,29 +9,26 @@ except ImportError:
 class Client(object):
     def __init__(self, conn_string):
         """
-        A Redis-based ``Client``.
+        A Beanstalk-based ``Client``.
 
         :param conn_string: The DSN. The host/port/db are parsed out of it.
-            Should be of the format ``redis://host:port/db``
+            Should be of the format ``beanstalk://host:port/``
         :type conn_string: string
         """
         self.conn_string = conn_string
         bits = urlparse(self.conn_string)
         self.conn = self.get_connection(
             host=bits.hostname,
-            port=bits.port,
-            db=bits.path.lstrip('/').split('/')[0]
+            port=bits.port
         )
 
-    def get_connection(self, host, port, db):
+    def get_connection(self, host, port):
         """
         Returns a ``StrictRedis`` connection instance.
         """
-        return redis.StrictRedis(
+        return beanstalkc.Connection(
             host=host,
-            port=port,
-            db=db,
-            decode_responses=True
+            port=port
         )
 
     def len(self, queue_name):
@@ -45,7 +42,15 @@ class Client(object):
         :returns: The length of the queue
         :rtype: integer
         """
-        return self.conn.llen(queue_name)
+        try:
+            stats = self.conn.stats_tube(queue_name)
+        except beanstalkc.CommandFailed as err:
+            if err[1] == 'NOT_FOUND':
+                return 0
+
+            raise
+
+        return stats.get('current-jobs-ready', 0)
 
     def drop_all(self, queue_name):
         """
@@ -55,12 +60,16 @@ class Client(object):
             ``Gator`` instance.
         :type queue_name: string
         """
-        task_ids = self.conn.lrange(queue_name, 0, -1)
+        # This is very inefficient, but Beanstalk (as of v1.10) doesn't support
+        # deleting an entire tube.
+        queue_length = self.len(queue_name)
+        self._only_watch_from(queue_name)
 
-        for task_id in task_ids:
-            self.conn.delete(task_id)
+        for i in xrange(queue_length):
+            job = self.conn.reserve(timeout=0)
 
-        self.conn.delete(queue_name)
+            if job:
+                job.delete()
 
     def push(self, queue_name, task_id, data):
         """
@@ -76,9 +85,21 @@ class Client(object):
         :param data: The relevant data for the task.
         :type data: string
         """
-        self.conn.lpush(queue_name, task_id)
-        self.conn.set(task_id, data)
-        return task_id
+        # Beanstalk doesn't let you specify a task id.
+        self.conn.use(queue_name)
+        return self.conn.put(data)
+
+    def _only_watch_from(self, queue_name):
+        seen = False
+
+        for watched in self.conn.watching():
+            if watched == queue_name:
+                seen = True
+            else:
+                self.conn.ignore(watched)
+
+        if not seen:
+            self.conn.watch(queue_name)
 
     def pop(self, queue_name):
         """
@@ -91,10 +112,10 @@ class Client(object):
         :returns: The data for the task.
         :rtype: string
         """
-        task_id = self.conn.lpop(queue_name)
-        data = self.conn.get(task_id)
-        self.conn.delete(task_id)
-        return data
+        self._only_watch_from(queue_name)
+        job = self.conn.reserve(timeout=0)
+        job.delete()
+        return job.body
 
     def get(self, queue_name, task_id):
         """
@@ -110,11 +131,11 @@ class Client(object):
         :returns: The data for the task.
         :rtype: string
         """
-        self.conn.lrem(queue_name, 1, task_id)
-        data = self.conn.get(task_id)
+        self._only_watch_from(queue_name)
+        job = self.conn.peek(task_id)
 
-        if data:
-            self.conn.delete(task_id)
-            return data
+        if not job:
+            return
 
-
+        job.delete()
+        return job.body

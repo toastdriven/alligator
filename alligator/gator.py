@@ -104,7 +104,11 @@ class Gator(object):
         data = task.serialize()
 
         if task.async:
-            self.backend.push(self.queue_name, task.task_id, data)
+            task.task_id = self.backend.push(
+                self.queue_name,
+                task.task_id,
+                data
+            )
         else:
             self.execute(task)
 
@@ -182,7 +186,11 @@ class Gator(object):
                 if task.async:
                     # Place it back on the queue.
                     data = task.serialize()
-                    self.backend.push(self.queue_name, task.task_id, data)
+                    task.task_id = self.backend.push(
+                        self.queue_name,
+                        task.task_id,
+                        data
+                    )
                 else:
                     return self.execute(task)
             else:

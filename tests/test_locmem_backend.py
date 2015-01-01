@@ -53,7 +53,7 @@ class LocmemTestCase(unittest.TestCase):
     def test_pop(self):
         self.backend.push('all', 'hello', {'whee': 1})
 
-        data = self.backend.get('all', 'hello')
+        data = self.backend.pop('all')
         self.assertEqual(data, {'whee': 1})
         self.assertEqual(LocmemClient.queues, {'all': []})
         self.assertEqual(LocmemClient.task_data, {})

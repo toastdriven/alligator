@@ -110,7 +110,7 @@ class GatorTestCase(unittest.TestCase):
         self.gator.push(task_2, so_computationally_expensive, 3, 5)
         self.assertEqual(self.gator.backend.len(ALL), 2)
 
-        res = self.gator.get('hello')
+        res = self.gator.get(task_2.task_id)
         self.assertEqual(res, 8)
 
         res = self.gator.get(task_1.task_id)
