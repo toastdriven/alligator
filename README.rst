@@ -17,17 +17,12 @@ Requirements
 WHY?!!1!
 --------
 
-Because I have NIH-syndrome.
-
-Or because I longed for something simple (~375 loc).
-
-Or because I wanted something with tests (90%+ coverage) & docs (soon).
-
-Or because I wanted pluggable backends.
-
-Or because testing some other queuing system was a pain.
-
-Or because I'm an idiot.
+* Because I have NIH-syndrome.
+* Or because I longed for something simple (~375 loc).
+* Or because I wanted something with tests (90%+ coverage) & docs.
+* Or because I wanted pluggable backends.
+* Or because testing some other queuing system was a pain.
+* Or because I'm an idiot.
 
 
 Basic Usage
@@ -143,7 +138,6 @@ Running Tests
 TODO
 ----
 
-* Docs
 * Scheduled tasks
 * Dependent tasks
 * Cancellable tasks

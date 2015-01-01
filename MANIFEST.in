@@ -1,3 +1,4 @@
+recursive-include bin *
 recursive-include docs *
 include AUTHORS
 include LICENSE

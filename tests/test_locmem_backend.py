@@ -68,3 +68,7 @@ class LocmemTestCase(unittest.TestCase):
         self.assertEqual(LocmemClient.task_data, {
             'hello': {'whee': 1}
         })
+
+        # Try a non-existent one.
+        data = self.backend.get('all', 'nopenopenope')
+        self.assertEqual(data, None)

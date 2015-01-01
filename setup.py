@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='alligator',
-    version='0.1.0-dev',
+    version='0.5.0-dev',
     description='Simple offline task queues.',
     author='Daniel Lindsley',
     author_email='daniel@toastdriven.com',
@@ -14,6 +14,11 @@ setup(
     packages=[
         'alligator',
     ],
+    include_package_data=True,
+    zip_safe=False,
+    scripts=[
+        'bin/latergator.py',
+    ],
     requires=[
         # 'six(>=1.4.0)',
     ],
@@ -21,7 +26,6 @@ setup(
         # 'six>=1.4.0',
     ],
     tests_require=[
-        'mock',
         'pytest',
         'coverage',
         'pytest-cov',

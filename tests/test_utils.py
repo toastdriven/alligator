@@ -1,5 +1,7 @@
+import re
 import unittest
 
+from alligator import __version__, version
 from alligator.exceptions import UnknownModuleError, UnknownCallableError
 from alligator.utils import (
     determine_module,
@@ -36,3 +38,12 @@ class UtilsTestCase(unittest.TestCase):
         self.assertEqual(determine_name(import_module), 'import_module')
         self.assertEqual(determine_name(Client), 'Client')
         self.assertEqual(determine_name(lambda x: x), '<lambda>')
+
+    def test_version(self):
+        semver = re.compile(r'[\d+]\.[\d+]\.[\d+]')
+
+        v = version()
+        self.assertTrue(semver.match(v))
+
+        if len(__version__) > 3:
+            self.assertTrue(__version__[3] in v)
