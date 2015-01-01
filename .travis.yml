@@ -10,11 +10,7 @@ before_install:
   - sudo apt-get install -y beanstalkd
 # command to install dependencies
 install:
-  - pip install -r requirements.txt
-  - pip install pytest-cov
-  - pip install redis
-  - pip install beanstalkc
-  - pip install PyYAML
+  - pip install -r test${TRAVIS_PYTHON_VERSION:0:1}_reqs.txt
 # command to run tests
 script:
   - tests/run_all.sh

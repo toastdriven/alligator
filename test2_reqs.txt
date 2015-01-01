@@ -1,0 +1,7 @@
+-e requirements.txt
+
+pytest==2.6.4
+pytest-cov==1.8.1
+redis==2.10.3
+beanstalkc==0.4.0
+PyYAML==3.11
