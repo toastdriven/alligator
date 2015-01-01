@@ -13,6 +13,7 @@ setup(
     long_description=open('README.rst', 'r').read(),
     packages=[
         'alligator',
+        'alligator/backends',
     ],
     include_package_data=True,
     zip_safe=False,
