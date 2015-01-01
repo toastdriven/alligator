@@ -1,6 +1,9 @@
 Alligator
 =========
 
+.. image:: https://travis-ci.org/toastdriven/alligator.png?branch=master
+        :target: https://travis-ci.org/toastdriven/alligator
+
 Simple offline task queues. For Python.
 
 "See you later, alligator."
