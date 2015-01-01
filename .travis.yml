@@ -1,11 +1,15 @@
 language: python
 python:
-- "3.4"
-- "3.3"
-- "2.7"
+  - "3.4"
+  - "3.3"
+  - "2.7"
+services:
+  - redis-server
 # command to install dependencies
 install:
-- pip install -r requirements.txt
+  - pip install -r requirements.txt
+  - pip install pytest-cov
+  - pip install redis
 # command to run tests
 script:
-- py.test --cov=alligator
+  - tests/run_all.sh
