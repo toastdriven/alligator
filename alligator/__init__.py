@@ -4,7 +4,7 @@ from .tasks import Task
 from .workers import Worker
 
 __author__ = 'Daniel Lindsley'
-__version__ = (0, 6, 0)
+__version__ = (0, 7, 0, 'dev')
 __license__ = 'BSD'
 
 
