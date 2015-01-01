@@ -197,13 +197,6 @@ our view is still slow.
 This is where Alligator comes in. We'll start off by importing the ``Gator``
 class at the top of the file & making an instance.
 
-.. code:: python
-
-    from alligator import Gator
-
-    # Connect to a locally-running Redis server & use DB 0.
-    gator = Gator('redis://localhost:6379/0')
-
 .. note::
 
     Unless you're only using Alligator in **one** file, a best practice would
@@ -211,6 +204,53 @@ class at the top of the file & making an instance.
     configured ``gator`` object into your other files. Configuring it in one
     place is better than many instantiations (but also allows for setting
     up a different instance elsewhere).
+
+When creating a ``Gator`` instance, you'll need to choose a queue backend.
+Alligator ships with support for local-memory, Redis & Beanstalk. See the
+:ref:`installing` docs for setup info.
+
+Local Memory
+------------
+
+Primarily only for development or in testing, this has no dependencies, but
+keeps everything in-process.
+
+.. code:: python
+
+    from alligator import Gator
+
+    # Connect to a locally-running Redis server & use DB 0.
+    gator = Gator('redis://localhost:6379/0')
+
+
+Redis
+-----
+
+Redis is a good option for production and small-large installations.
+
+.. code:: python
+
+    from alligator import Gator
+
+    # Connect to a locally-running Redis server & use DB 0.
+    gator = Gator('redis://localhost:6379/0')
+
+
+Beanstalk
+---------
+
+Beanstalk specializes in queuing & can be used in production at large-very large
+installations.
+
+.. code:: python
+
+    from alligator import Gator
+
+    # Connect to a locally-running Beanstalk server.
+    gator = Gator('beanstalk://localhost:11300/')
+
+
+**For the duration of the tutorial, we'll assume you chose Redis.**
 
 Then the only other change is to how we call ``send_post_email``. Instead of
 calling it directly, we'll use ``gator.task(...)``.

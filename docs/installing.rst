@@ -47,4 +47,27 @@ You can also install via other package managers::
 Beanstalk
 ---------
 
-Support for beanstalk is coming in a future release.
+A simple & fast queue. Official releases can be found at
+http://kr.github.io/beanstalkd/.
+
+You can also install via other package managers::
+
+    # On Mac with Homebrew
+    $ brew install beanstalk
+
+    # On Ubuntu
+    $ sudo aptitude install beanstalkd
+
+.. warning::
+
+    Beanstalk works differently than the other queues in several notable ways:
+
+    1. It does **NOT** support custom ``task_id``s. You can still set them
+       and it will be preseved in the task, but the backend will overwrite
+       your ``task_id`` choice once it's in the queue.
+    2. Dropping a whole queue is **VERY** inefficient.
+    3. It depends on **PyYAML** & uses a known-unsafe parsing method, which
+       could make you susceptible to MiTM attacks.
+
+    It's still an excellent choice at large volumes, but you should be aware of
+    the shortcomings.

@@ -14,7 +14,8 @@ Requirements
 
 * Python 2.6+ or Python 3.3+
 * (Optional) ``redis`` for the Redis backend
-* **FUTURE** (Optional) ``beanstalkc`` for the Beanstalk backend
+* (Optional) ``beanstalkc`` for the Beanstalk backend
+* (Optional) ``PyYAML`` for the Beanstalk backend
 
 
 WHY?!!1!

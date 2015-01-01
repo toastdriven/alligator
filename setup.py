@@ -31,6 +31,8 @@ setup(
         'coverage',
         'pytest-cov',
         'redis',
+        'beanstalkc',
+        'PyYAML',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
