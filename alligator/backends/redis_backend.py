@@ -1,6 +1,9 @@
 import redis
 
-import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 
 class Client(object):
@@ -13,7 +16,7 @@ class Client(object):
         :type conn_string: string
         """
         self.conn_string = conn_string
-        bits = urlparse.urlparse(self.conn_string)
+        bits = urlparse(self.conn_string)
         self.conn = self.get_connection(
             host=bits.hostname,
             port=bits.port,
