@@ -30,7 +30,8 @@ class Client(object):
         return redis.StrictRedis(
             host=host,
             port=port,
-            db=db
+            db=db,
+            decode_responses=True
         )
 
     def len(self, queue_name):
