@@ -109,24 +109,12 @@ License
 New BSD
 
 
-Complex Usage (For Future Docs)
--------------------------------
+Future Wishlist
+---------------
+
+These things aren't present yet, but maybe someday they will be.
 
 .. code:: python
-
-    # We're re-using the above imports/setup.
-
-    def log_func(job):
-        # A simple example of logging a failed task.
-        if job.result != SUCCESS:
-            logging.error("Job {} failed.".format(job.id))
-
-    # A context manager for supplying options
-    with gator.options(retries=3, async=settings.ASYNC_TASKS, on_error=log_func) as task:
-        feeds_job = task(sketchy_fetch_feeds, timeout=30)
-
-
-    # Future wishlist items...
 
     # Dependent tasks, will only run if the listed tasks succeed.
     with gator.options(depends_on=[feeds_job]) as task:
