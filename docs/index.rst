@@ -15,6 +15,7 @@ Guide
 
    installing
    tutorial
+   bestpractices
    extending
 
    contributing
