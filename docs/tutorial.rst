@@ -22,8 +22,13 @@ Some example good use-cases for offline tasks include:
 You should check out the instructions on :ref:`installing` to install Alligator.
 
 Alligator is written in pure Python & can work with all frameworks. For this
-tutorial, we'll assume integration with a Django-based web application, but
-it could just as easily be used with Pyramid, pure WSGI applications, etc.
+tutorial, we'll assume integration with a `Django`_-based web application, but
+it could just as easily be used with `Flask`_, `Pyramid`_, pure WSGI
+applications, etc.
+
+.. _`Django`: http://djangoproject.com/
+.. _`Flask`: http://flask.pocoo.org/
+.. _`Pyramid`: http://www.pylonsproject.org/
 
 
 Philosophy
