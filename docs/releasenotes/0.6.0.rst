@@ -1,0 +1,19 @@
+alligator 0.6.0
+===============
+
+:date: 2015-01-01
+
+This was a bugfix release that added Travis CI support & corrected Python 3
+errors in the Redis backend.
+
+
+Features
+--------
+
+* Added Travis CI integration for testing. (SHA: a570391 & SHA: cef31d3)
+
+
+Bugfixes
+--------
+
+* Fixed the Python 3 support in the Redis client. (SHA: d255427 & SHA: 58cdf3c)

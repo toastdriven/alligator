@@ -1,0 +1,22 @@
+alligator 0.5.0
+===============
+
+:date: 2015-01-01
+
+The initial public release of Alligator!
+
+
+Features
+--------
+
+* Working codes.
+* Fully passing tests.
+* Locmem support.
+* Redis support.
+* Install, tutorial & API docs.
+
+
+Bugfixes
+--------
+
+None

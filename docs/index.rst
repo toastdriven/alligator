@@ -30,6 +30,18 @@ API Reference
    reference/*
 
 
+Release Notes
+=============
+
+.. toctree::
+   :maxdepth: 1
+
+   releasenotes/0.7.0
+   releasenotes/0.6.0
+   releasenotes/0.5.1
+   releasenotes/0.5.0
+
+
 Indices and tables
 ==================
 

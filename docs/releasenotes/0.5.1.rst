@@ -1,0 +1,20 @@
+alligator 0.5.1
+===============
+
+:date: 2015-01-01
+
+This was a bugfix release that corrected some packaging issues with Alligator
+0.5.0.
+
+
+Features
+--------
+
+* None
+
+
+Bugfixes
+--------
+
+* Fixed a packaging error that resulted in none of the backends being included.
+  (SHA: 0e00b3b)

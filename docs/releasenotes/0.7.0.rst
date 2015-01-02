@@ -1,0 +1,22 @@
+alligator 0.7.0
+===============
+
+:date: 2015-01-01
+
+This release added support for the `Beanstalk`_ queue, bringing the supported
+backends to three!
+
+.. _`Beanstalk`: http://kr.github.io/beanstalkd/
+
+
+Features
+--------
+
+* Added Beanstalk support. (SHA: a7edf0c)
+* Added docs for the Beanstalk support. (SHA: 5c49994)
+
+
+Bugfixes
+--------
+
+* None
