@@ -8,6 +8,8 @@ Simple offline task queues. For Python.
 
 "See you later, alligator."
 
+Latest documentation at http://alligator.readthedocs.org/en/latest/.
+
 
 Requirements
 ------------

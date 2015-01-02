@@ -35,6 +35,10 @@ A in-memory data structure server, it offers excellent speed as well as being
 a frequently-already-installed server. Official releases can be found at
 http://redis.io/download.
 
+You'll also need to install the ``redis`` package::
+
+    $ pip install redis
+
 You can also install via other package managers::
 
     # On Mac with Homebrew
@@ -49,6 +53,16 @@ Beanstalk
 
 A simple & fast queue. Official releases can be found at
 http://kr.github.io/beanstalkd/.
+
+.. warning::
+
+    This backend does not support Python 3.3+, as the underlying dependencies
+    have not been ported.
+
+You'll also need to install the both the ``beanstalkc`` & ``PyYAML`` packages::
+
+    $ pip install beanstalkc
+    $ pip install PyYAML
 
 You can also install via other package managers::
 
