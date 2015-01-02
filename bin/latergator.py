@@ -13,9 +13,9 @@ def main(dsn):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        print('Usage: python latorgator.py <DSN>')
+    if len(sys.argv) < 2:
+        print('Usage: python latergator.py <DSN>')
         sys.exit(1)
 
-    dsn = sys.argv[2]
+    dsn = sys.argv[1]
     main(dsn)
