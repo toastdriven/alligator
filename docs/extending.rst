@@ -225,10 +225,171 @@ You could also fire up many ``email_gator`` workers (say 4) and just 1-2
 Custom Backend Clients
 ======================
 
-TBD
+As of the time of writing, Alligator supports the following clients:
+
+* Locmem
+* Redis
+* Beanstalk
+
+However, if you have a different datastore or queue you'd like to use, you can
+write a custom backend ``Client`` to talk to that store. For example, let's
+write a naive version based on SQLite using the ``sqlite3`` module included
+with Python.
+
+.. warning::
+
+    This code is simplistic for purposes of illustration. It's not thread-safe
+    nor particularly suited to large loads. It's a demonstration of how you
+    might approach things. Your Mileage May Vary.™
+
+First, we need to create our custom ``Client``. Where you put it doesn't matter
+much, as long as it is importable.
+
+Each ``Client`` must have the following methods:
+
+* ``len``
+* ``drop_all``
+* ``push``
+* ``pop``
+* ``get``
+
+.. code:: python
+
+    # myapp/sqlite_backend.py
+    import sqlite3
+
+
+    class Client(object):
+        def __init__(self, conn_string):
+            # This is actually the filepath to the DB file.
+            self.conn_string = conn_string
+            # Kill the 'sqlite://' portion.
+            path = self.conn_string.split('://', 1)[1]
+            self.conn = sqlite3.connect(path)
+
+        def _run_query(self, query, args):
+            cur = self.conn.cursor()
+
+            if not args:
+                cur.execute(query)
+            else:
+                cur.execute(query, args)
+
+            return cur
+
+        def len(self, queue_name):
+            query = 'SELECT COUNT(task_id) FROM `{}`'.format(queue_name)
+            cur = self._run_query(query, [])
+            res = cur.fetchone()
+            return res[0]
+
+        def drop_all(self, queue_name):
+            query = 'DELETE FROM `{}`'.format(queue_name)
+            self._run_query(query, [])
+
+        def push(self, queue_name, task_id, data):
+            query = 'INSERT INTO `{}` (task_id, data) VALUES (?, ?)'.format(
+                queue_name
+            )
+            self._run_query(query, [task_id, data])
+            return task_id
+
+        def pop(self, queue_name):
+            query = 'SELECT task_id, data FROM `{}` LIMIT 1'.format(queue_name)
+            cur = self._run_query(query, [])
+            res = cur.fetchone()
+
+            query = 'DELETE FROM `{}` WHERE task_id = ?'.format(queue_name)
+            self._run_query(query, [res[0]])
+
+            return res[1]
+
+        def get(self, queue_name, task_id):
+            query = 'SELECT task_id, data FROM `{}` WHERE task_id = ?'.format(
+                queue_name
+            )
+            cur = self._run_query(query, [task_id])
+            res = cur.fetchone()
+
+            query = 'DELETE FROM `{}` WHERE task_id = ?'.format(queue_name)
+            self._run_query(query, [task_id])
+
+            return res[1]
+
+Now using it is simple. We'll make a ``Gator`` instance, passing our new class
+via the ``backend_class=...`` keyword argument.
+
+.. code:: python
+
+    from alligator import Gator
+
+    from myapp.sqlite_backend import Client as SQLiteClient
+
+
+    gator = Gator('sqlite:///tmp/myapp_queue.db', backend_class=SQLiteClient)
+
+And use that ``Gator`` instance as normal!
 
 
 Different Workers
 =================
 
-TBD
+The ``Worker`` class that ships with Alligator is somewhat opinionated &
+simple-minded. It assumes it will be used from a command-line & can print
+informational messages to ``STDOUT``.
+
+However, this may not work for your purposes. To work around this, you can
+subclass ``Worker`` (or make your own entirely new one).
+
+For instance, let's make ``Worker`` use ``logging`` instead of ``STDOUT``.
+We'll swap out all the methods that ``print(...)`` for methods that log instead.
+
+.. code:: python
+
+    # myapp/logworkers.py
+    import logging
+
+    from alligator import Worker
+
+
+    log = logging.getLogger('alligator.worker')
+
+
+    class LoggingWorker(Worker):
+        def starting(self):
+            ident = self.ident()
+            log.info('{} starting & consuming "{}".'.format(ident, self.to_consume))
+
+            if self.max_tasks:
+                log.info('{} will die after {} tasks.'.format(ident, self.max_tasks))
+            else:
+                log.info('{} will never die.'.format(ident))
+
+        def stopping(self):
+            ident = self.ident()
+            log.info('{} for "{}" shutting down. Consumed {} tasks.'.format(
+                ident,
+                self.to_consume,
+                self.tasks_complete
+            ))
+
+        def result(self, result):
+            # Because we don't usually care about the return values.
+            log.debug(result)
+
+As with previous ``Worker`` customizations, you won't be able to use
+``latergator.py`` anymore. Instead, we'll make a script.
+
+.. code:: python
+
+    # myapp/logginggator.py
+    from alligator import Gator
+
+    from myapp.logworkers import LoggingWorker
+
+
+    gator = Gator('redis://localhost:6379/0')
+    worker = LoggingWorker(gator)
+    worker.run_forever()
+
+And now there's no more nasty ``STDOUT`` messages!
