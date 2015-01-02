@@ -187,8 +187,8 @@ us for offlining the task.
     for adding a task queue, it doesn't make sense.
 
 
-Put the Task on the Queue
-=========================
+Create a Gator Instance
+=======================
 
 While it's great we got better encapsulation by pulling out the logic into
 its own function, we're still doing the sending of email in-process, which means
@@ -252,13 +252,34 @@ installations.
 
 **For the duration of the tutorial, we'll assume you chose Redis.**
 
-Then the only other change is to how we call ``send_post_email``. Instead of
-calling it directly, we'll use ``gator.task(...)``.
+
+Put the Task on the Queue
+=========================
+
+After we make a ``Gator`` instance, the only other change is to how we call
+``send_post_email``. Instead of calling it directly, we'll need to enqueue
+a task.
+
+There are two common ways of creating a task in Alligator:
+
+``gator.task()``
+    A typical function call. You pass in the callable & the
+    ``*args``/``**kwargs`` to provide to the callable. It gets put on the
+    queue with the default task execution options.
+
+``gator.options()``
+    Creates a context manager that has a ``.task()`` method that works
+    like the above. This is useful for controlling the task execution options,
+    such as retries or if the task should be asynchronous. See the "Working
+    Around Failsome Tasks" section below.
+
+Since we're just starting out with Alligator & looking to replicate the
+existing behavior, we'll use ``gator.task(...)`` to create & enqueue the task.
 
 .. code:: python
 
     # Old code
-    # send_post_email(request.user.pk, post.pk)
+    send_post_email(request.user.pk, post.pk)
 
     # New code
     gator.task(send_post_email, request.user.pk, post.pk)
