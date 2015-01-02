@@ -10,10 +10,10 @@ errors in the Redis backend.
 Features
 --------
 
-* Added Travis CI integration for testing. (SHA: a570391 & SHA: cef31d3)
+* Added Travis CI integration for testing. (SHA:`a570391` & SHA:`cef31d3`)
 
 
 Bugfixes
 --------
 
-* Fixed the Python 3 support in the Redis client. (SHA: d255427 & SHA: 58cdf3c)
+* Fixed the Python 3 support in the Redis client. (SHA:`d255427` & SHA:`58cdf3c`)

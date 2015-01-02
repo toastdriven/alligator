@@ -12,8 +12,8 @@ backends to three!
 Features
 --------
 
-* Added Beanstalk support. (SHA: a7edf0c)
-* Added docs for the Beanstalk support. (SHA: 5c49994)
+* Added Beanstalk support. (SHA:`a7edf0c`)
+* Added docs for the Beanstalk support. (SHA:`5c49994`)
 
 
 Bugfixes
