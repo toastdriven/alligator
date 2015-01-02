@@ -449,21 +449,17 @@ Going Beyond
 This is 90%+ of the day-to-day usage of Alligator, but there's plenty more
 you can do with it.
 
-If you need to customize task behavior, using the
-``on_start/on_success/on_error`` hook functions can go a long way, but you can
-also create your own ``Task`` classes.
+You may wish to peruse the :ref:`bestpractices` docs for ideas on how to keep
+your Alligator clean & flexible.
 
-If you need more scalability, you can use multiple queues (by passing
-``queue_name='...'`` when initializing the ``Gator`` instance) & lots of
-workers to distribute/fan-out the tasks.
+If you need more custom functionality, the :ref:`extending` docs have
+examples on:
 
-You can create custom backends to support other queues (by passing
-``backend_class=...`` when initializing the ``Gator`` instance).
-
-And you can use your own ``Worker`` subclasses to customize how you process
-tasks.
-
-All these things are in the :ref:`extending` docs, so when you need more
-advanced things, you should check that out.
+* Customizing task behavior using the ``on_start/on_success/on_error`` hook
+  functions.
+* Custom ``Task`` classes.
+* Multiple queues & ``Workers`` for scalability.
+* Custom backends.
+* ``Worker`` subclasses.
 
 Happy queuing!
