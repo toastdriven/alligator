@@ -69,6 +69,14 @@ class Gator(object):
         client_class = import_attr(backend_path, 'Client')
         return client_class(conn_string)
 
+    def len(self):
+        """
+        Returns the number of remaining queued tasks.
+
+        :returns: An integer count
+        """
+        return self.backend.len(self.queue_name)
+
     def push(self, task, func, *args, **kwargs):
         """
         Pushes a configured task onto the queue.
