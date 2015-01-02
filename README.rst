@@ -33,7 +33,9 @@ Basic Usage
 -----------
 
 This example uses Django, but there's nothing Django-specific about Alligator.
-You can use it with any Python code.
+
+I repeat, You can use it with **any** Python code that would benefit from
+background processing.
 
 .. code:: python
 
@@ -78,7 +80,15 @@ Running Tasks
 -------------
 
 Rather than trying to do autodiscovery, fanout, etc., you control how your
-workers are configured & what they consumer. Create a new executable file
+workers are configured & what they consumer.
+
+If your needs are simple, run the included ``latergator.py`` worker:
+
+.. code:: bash
+
+    $ python latergator.py redis://localhost:6379/0
+
+If you have more complex needs, you can create a new executable file
 (bin script, management command, whatever) & drop in the following code.
 
 .. code:: python
@@ -130,7 +140,9 @@ Complex Usage (For Future Docs)
 Running Tests
 -------------
 
-::
+Alligator has 95%+ test coverage & aims to be passing/stable at all times.
+
+If you'd like to run the tests, clone the repo, then run::
 
     $ virtualenv env2
     $ . env2/bin/activate
