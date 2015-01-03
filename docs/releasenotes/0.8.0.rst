@@ -1,0 +1,18 @@
+alligator 0.8.0
+===============
+
+:date: 2015-01-02
+
+This release adds the abililty to cancel a task before it is processed.
+
+
+Features
+--------
+
+* Added task cancellation. (SHA:`981503a`, SHA:`c3b26ee` & SHA:`34fe5ab`)
+
+
+Bugfixes
+--------
+
+* None
