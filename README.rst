@@ -118,13 +118,14 @@ These things aren't present yet, but maybe someday they will be.
 
 .. code:: python
 
-    # Dependent tasks, will only run if the listed tasks succeed.
-    with gator.options(depends_on=[feeds_job]) as task:
-        task(rebuild_cache)
-
     # Delayed tasks (run in an hour).
     with gator.options(run_after=60 * 60) as task:
         task(this_can_wait)
+
+    # Dependent tasks, will only run if the listed tasks succeed.
+    # Maybe.
+    with gator.options(depends_on=[feeds_job]) as task:
+        task(rebuild_cache)
 
 
 Running Tests
@@ -146,4 +147,3 @@ TODO
 
 * Scheduled tasks
 * Dependent tasks
-* Cancellable tasks
