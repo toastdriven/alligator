@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='alligator',
-    version='0.8.0-dev',
+    version='0.8.0',
     description='Simple offline task queues.',
     author='Daniel Lindsley',
     author_email='daniel@toastdriven.com',
