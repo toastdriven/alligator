@@ -1,7 +1,7 @@
 import json
 import uuid
 
-from .constants import WAITING, SUCCESS, FAILED
+from .constants import WAITING, SUCCESS, FAILED, RETRYING, CANCELED
 from .utils import determine_module, determine_name, import_attr
 
 
@@ -118,6 +118,24 @@ class Task(object):
         figuring out what the status of the task is.
         """
         self.status = FAILED
+
+    def to_canceled(self):
+        """
+        Sets the task's status as "canceled".
+
+        Useful for the ``on_start/on_success/on_failed`` hook methods for
+        figuring out what the status of the task is.
+        """
+        self.status = CANCELED
+
+    def to_retrying(self):
+        """
+        Sets the task's status as "retrying".
+
+        Useful for the ``on_start/on_success/on_failed`` hook methods for
+        figuring out what the status of the task is.
+        """
+        self.status = RETRYING
 
     def serialize(self):
         """

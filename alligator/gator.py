@@ -168,6 +168,32 @@ class Gator(object):
             task = self.task_class.deserialize(data)
             return self.execute(task)
 
+    def cancel(self, task_id):
+        """
+        Takes an existing task & cancels it before it is processed.
+
+        Returns the canceled task, as that could be useful in creating a new
+        task.
+
+        Ex::
+
+            task = gator.task(add, 18, 9)
+
+            # Whoops, didn't mean to do that.
+            gator.cancel(task.task_id)
+
+        :param task_id: The identifier of the task to process
+        :type task_id: string
+
+        :returns: The canceled ``Task`` instance
+        """
+        data = self.backend.get(self.queue_name, task_id)
+
+        if data:
+            task = self.task_class.deserialize(data)
+            task.to_canceled()
+            return task
+
     def execute(self, task):
         """
         Given a task instance, this runs it.
@@ -190,6 +216,7 @@ class Gator(object):
         except Exception:
             if task.retries > 0:
                 task.retries -= 1
+                task.to_retrying()
 
                 if task.async:
                     # Place it back on the queue.

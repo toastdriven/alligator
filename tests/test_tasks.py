@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from alligator.constants import WAITING, SUCCESS, FAILED
+from alligator.constants import WAITING, SUCCESS, FAILED, RETRYING, CANCELED
 from alligator.tasks import Task
 
 
@@ -82,6 +82,18 @@ class TaskTestCase(unittest.TestCase):
 
         self.task.to_failed()
         self.assertEqual(self.task.status, FAILED)
+
+    def test_to_canceled(self):
+        self.assertEqual(self.task.status, WAITING)
+
+        self.task.to_canceled()
+        self.assertEqual(self.task.status, CANCELED)
+
+    def test_to_retrying(self):
+        self.assertEqual(self.task.status, WAITING)
+
+        self.task.to_retrying()
+        self.assertEqual(self.task.status, RETRYING)
 
     def test_serialize(self):
         # Shenanigans. You'd normally use the kwargs at ``__init__``...

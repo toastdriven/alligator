@@ -3,8 +3,15 @@ import unittest
 
 from alligator.backends.locmem_backend import Client as LocmemClient
 from alligator.backends.redis_backend import Client as RedisClient
-from alligator.constants import ALL
-from alligator.gator import Gator, Options
+from alligator.constants import (
+    ALL,
+    WAITING,
+    SUCCESS,
+    FAILED,
+    RETRYING,
+    CANCELED
+)
+from alligator.gator import Gator
 from alligator.tasks import Task
 
 
@@ -116,6 +123,19 @@ class GatorTestCase(unittest.TestCase):
         res = self.gator.get(task_1.task_id)
         self.assertEqual(res, 2)
 
+    def test_cancel(self):
+        self.assertEqual(self.gator.backend.len(ALL), 0)
+
+        task_1 = Task(async=True)
+        task_2 = Task(task_id='hello', async=True)
+        self.gator.push(task_1, so_computationally_expensive, 1, 1)
+        self.gator.push(task_2, so_computationally_expensive, 3, 5)
+        self.assertEqual(self.gator.backend.len(ALL), 2)
+
+        task = self.gator.cancel(task_2.task_id)
+        self.assertEqual(task.status, CANCELED)
+        self.assertEqual(self.gator.backend.len(ALL), 1)
+
     def test_execute_success(self):
         task = Task(retries=3, async=True)
         task.to_call(so_computationally_expensive, 2, 7)
@@ -123,19 +143,23 @@ class GatorTestCase(unittest.TestCase):
         res = self.gator.execute(task)
         self.assertEqual(res, 9)
         self.assertEqual(task.retries, 3)
+        self.assertEqual(task.status, SUCCESS)
 
     def test_execute_failed(self):
         task = Task(retries=3, async=True)
         task.to_call(fail_task, 2, 7)
+        self.assertEqual(task.status, WAITING)
 
         try:
             self.gator.execute(task)
+            self.assertEqual(task.status, RETRYING)
             self.gator.execute(task)
             self.gator.execute(task)
             self.gator.execute(task)
             self.fail()
         except IOError:
             self.assertEqual(task.retries, 0)
+            self.assertEqual(task.status, FAILED)
 
     def test_execute_retries(self):
         task = Task(retries=3, async=True)
