@@ -18,6 +18,7 @@ Requirements
 * (Optional) ``redis`` for the Redis backend
 * (Optional) ``beanstalkc`` for the Beanstalk backend
 * (Optional) ``PyYAML`` for the Beanstalk backend
+* (Optional) ``boto`` for the SQS backend
 
 
 WHY?!!1!

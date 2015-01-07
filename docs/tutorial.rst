@@ -257,7 +257,23 @@ installations.
     gator = Gator('beanstalk://localhost:11300/')
 
 
+SQS
+---
+
+`Amazon SQS`_ is specifically a queue service & works well in large-scale
+environments.
+
+.. code:: python
+
+    from alligator import Gator
+
+    # Connect to a locally-running Beanstalk server.
+    gator = Gator('sqs://us-west-2/')
+
+
 **For the duration of the tutorial, we'll assume you chose Redis.**
+
+.. _`Amazon SQS`: http://aws.amazon.com/sqs/
 
 
 Put the Task on the Queue

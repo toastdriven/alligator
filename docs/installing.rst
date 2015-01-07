@@ -85,3 +85,33 @@ You can also install via other package managers::
 
     It's still an excellent choice at large volumes, but you should be aware of
     the shortcomings.
+
+
+SQS
+---
+
+`Amazon SQS`_ is a queue service created by Amazon Web Services. It works well
+in large-scale environments or if you're already using other AWS services.
+
+It has the benefit of not requiring an installed setup, only an AWS account &
+a credit card, making it the easiest of the production queues to setup.
+
+You'll need to install the ``boto`` packages::
+
+    $ pip install boto
+
+.. warning::
+
+    SQS works differently than the other queues in a couple ways:
+
+    1. It does **NOT** support custom ``task_id``s. You can still set them
+       and it will be preseved in the task, but the backend will overwrite
+       your ``task_id`` choice once it's in the queue.
+    2. You must **manually** create queues! Alligator will not auto-create them
+       (to save on requests performed & therefore how much you are billed).
+       Create the ``Gator`` queues at the AWS console before trying to use them.
+    3. It does **NOT** support ``gator.get(...)``, as this functionality is not
+       supported by the SQS service itself.
+
+    It's also an excellent choice at large volumes, but you should be aware of
+    the shortcomings.

@@ -11,7 +11,7 @@ class Client(object):
         """
         A Beanstalk-based ``Client``.
 
-        :param conn_string: The DSN. The host/port/db are parsed out of it.
+        :param conn_string: The DSN. The host/port are parsed out of it.
             Should be of the format ``beanstalk://host:port/``
         :type conn_string: string
         """
