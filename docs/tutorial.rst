@@ -224,8 +224,10 @@ keeps everything in-process.
 
     from alligator import Gator
 
-    # Connect to a locally-running Redis server & use DB 0.
-    gator = Gator('redis://localhost:6379/0')
+    # Creates an in-memory/in-process queue.
+    # The same process must consume from the queue, or things will be thrown
+    # away when the process exits.
+    gator = Gator('locmem://')
 
 
 Redis
