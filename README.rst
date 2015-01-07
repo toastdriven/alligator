@@ -82,7 +82,7 @@ Running Tasks
 -------------
 
 Rather than trying to do autodiscovery, fanout, etc., you control how your
-workers are configured & what they consumer.
+workers are configured & what they consume.
 
 If your needs are simple, run the included ``latergator.py`` worker:
 
