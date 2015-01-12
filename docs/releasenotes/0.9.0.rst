@@ -1,0 +1,28 @@
+alligator 0.9.0
+===============
+
+:date: 2015-01-11
+
+This release adds support for Amazon SQS as a queue backend. It also fixes a bug
+regarding the usage of ``latergator.py`` & corrects some of the documentation.
+
+Thanks to the following contributors:
+
+* peterbe
+* pombredanne
+
+
+Features
+--------
+
+* Added the SQS backend. (SHA: `1eedb4b` & SHA: `3e413d7`)
+
+
+Bugfixes
+--------
+
+* Corrected a copy-paste foul regarding the ``locmem`` backend in the tutorial.
+  (SHA: `ec6c222`)
+* Added the correct hashbang to the ``latergator.py`` script. (SHA: `9fb99ea`)
+* Fixed a typo in the README. (SHA: `4b59a92`)
+* Added docs on setting a prefix for queue names in testing. (SHA: `a07958c`)
