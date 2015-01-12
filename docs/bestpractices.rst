@@ -98,6 +98,44 @@ And have differing settings files for development vs. production.
 .. _`Django`: http://djangoproject.com/
 
 
+Use an Alternate Queue for Testing
+==================================
+
+This is an **important** one. By default, Alligator doesn't make any assumptions
+about what environment (development, testing, production) it is in. So the same
+queue name will be used.
+
+Especially if you have a shared queue setup for running tests, you can
+**accidentally** add testing data to your queue! There are two possible
+resolutions to this:
+
+1. Don't Share
+
+    Set your testing environment up such that it has it's own queue stack. This
+    will nicely isolate things & not require any code changes.
+
+2. Prefix your ``queue_name``
+
+    If you must share setup (for instance, developing & testing on the same
+    machine), use a similar approach to the "Env/Settings for Gator DSN" tip,
+    providing a prefix for your queue name. For example::
+
+.. code:: python
+
+    import os
+
+    from alligator import Gator
+
+
+    # Lean on the ENV variable for a queue prefix.
+    gator = Gator(
+        'redis://localhost:6379/0',
+        # If you ``export ALLIGATOR_PREFIX=test```, your queue name
+        # becomes 'test_all'. If not set, it's just 'all'.
+        queue_name='_'.join([os.environ.get('ALLIGATOR_PREFIX', ''), 'all'])
+    )
+
+
 Use Environment Variables or Settings for ``Task.async``
 ========================================================
 
