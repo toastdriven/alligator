@@ -2,8 +2,6 @@ import os
 import time
 import unittest
 
-from alligator.backends.sqs_backend import Client as SQSClient
-
 
 CONN_STRING = os.environ.get('ALLIGATOR_CONN')
 
@@ -12,6 +10,8 @@ CONN_STRING = os.environ.get('ALLIGATOR_CONN')
 class SQSTestCase(unittest.TestCase):
     def setUp(self):
         super(SQSTestCase, self).setUp()
+
+        from alligator.backends.sqs_backend import Client as SQSClient
         self.backend = SQSClient(CONN_STRING)
 
         # Just reach in & clear things out.
