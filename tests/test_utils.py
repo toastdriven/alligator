@@ -40,7 +40,7 @@ class UtilsTestCase(unittest.TestCase):
         self.assertEqual(determine_name(lambda x: x), '<lambda>')
 
     def test_version(self):
-        semver = re.compile(r'[\d+]\.[\d+]\.[\d+]')
+        semver = re.compile(r'[\d]+\.[\d]+\.[\d]+')
 
         v = version()
         self.assertTrue(semver.match(v))
