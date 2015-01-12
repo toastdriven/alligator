@@ -98,7 +98,7 @@ a credit card, making it the easiest of the production queues to setup.
 
 You'll need to install the ``boto`` packages::
 
-    $ pip install boto
+    $ pip install 'boto>=2.35.0'
 
 .. warning::
 
