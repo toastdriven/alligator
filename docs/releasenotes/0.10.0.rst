@@ -1,0 +1,22 @@
+alligator 0.10.0
+===============
+
+:date: 2015-03-31
+
+This release adds graceful handling of the SIGINT signal, allowing the
+in-progress task to complete before exiting. It also fixes a couple bugs
+regarding the test suite.
+
+
+Features
+--------
+
+* Graceful handling of SIGINT, allowing an in-progress task to finish.
+  (SHA: `3a05c08`)
+
+
+Bugfixes
+--------
+
+* Moved an import to allow tests to pass without boto present. (SHA: `6f92b5b`)
+* Fixed a broken versioning test. (SHA: `1c0ce02`)
