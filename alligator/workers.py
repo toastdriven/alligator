@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import signal
 import time
 
 from alligator.constants import ALL
@@ -63,6 +64,16 @@ class Worker(object):
         else:
             print('{} will never die.'.format(ident))
 
+    def interrupt(self):
+        """
+        Prints an interrupt message to stdout.
+        """
+        ident = self.ident()
+        print('{} for "{}" saw interrupt. Finishing in-progress task.'.format(
+            ident,
+            self.to_consume
+        ))
+
     def stopping(self):
         """
         Prints a shutdown message to stdout.
@@ -88,20 +99,24 @@ class Worker(object):
         ``Worker.max_tasks`` are reached.
         """
         self.starting()
+        self.keep_running = True
 
-        try:
-            while True:
-                if self.max_tasks and self.tasks_complete >= self.max_tasks:
-                    self.stopping()
-                    return 0
+        def handle(signum, frame):
+            self.interrupt()
+            self.keep_running = False
 
-                if self.gator.len():
-                    result = self.gator.pop()
-                    self.tasks_complete += 1
-                    self.result(result)
+        signal.signal(signal.SIGINT, handle)
 
-                if self.nap_time >= 0:
-                    time.sleep(self.nap_time)
-        except KeyboardInterrupt:
-            self.stopping()
-            return 1
+        while self.keep_running:
+            if self.max_tasks and self.tasks_complete >= self.max_tasks:
+                self.stopping()
+
+            if self.gator.len():
+                result = self.gator.pop()
+                self.tasks_complete += 1
+                self.result(result)
+
+            if self.nap_time >= 0:
+                time.sleep(self.nap_time)
+
+        return 0
