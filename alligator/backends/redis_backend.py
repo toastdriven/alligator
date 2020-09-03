@@ -1,9 +1,6 @@
-import redis
+from urllib.parse import urlparse
 
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+import redis
 
 
 class Client(object):
@@ -20,7 +17,7 @@ class Client(object):
         self.conn = self.get_connection(
             host=bits.hostname,
             port=bits.port,
-            db=bits.path.lstrip('/').split('/')[0]
+            db=bits.path.lstrip("/").split("/")[0],
         )
 
     def get_connection(self, host, port, db):
@@ -28,10 +25,7 @@ class Client(object):
         Returns a ``StrictRedis`` connection instance.
         """
         return redis.StrictRedis(
-            host=host,
-            port=port,
-            db=db,
-            decode_responses=True
+            host=host, port=port, db=db, decode_responses=True
         )
 
     def len(self, queue_name):
@@ -116,5 +110,4 @@ class Client(object):
         if data:
             self.conn.delete(task_id)
             return data
-
 
