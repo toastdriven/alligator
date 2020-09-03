@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os
 import signal
 import time
@@ -50,7 +48,7 @@ class Worker(object):
 
         Used in the printed messages & includes the process ID.
         """
-        return 'Alligator Worker (#{})'.format(os.getpid())
+        return "Alligator Worker (#{})".format(os.getpid())
 
     def starting(self):
         """
@@ -60,30 +58,31 @@ class Worker(object):
         print('{} starting & consuming "{}".'.format(ident, self.to_consume))
 
         if self.max_tasks:
-            print('{} will die after {} tasks.'.format(ident, self.max_tasks))
+            print("{} will die after {} tasks.".format(ident, self.max_tasks))
         else:
-            print('{} will never die.'.format(ident))
+            print("{} will never die.".format(ident))
 
     def interrupt(self):
         """
         Prints an interrupt message to stdout.
         """
         ident = self.ident()
-        print('{} for "{}" saw interrupt. Finishing in-progress task.'.format(
-            ident,
-            self.to_consume
-        ))
+        print(
+            '{} for "{}" saw interrupt. Finishing in-progress task.'.format(
+                ident, self.to_consume
+            )
+        )
 
     def stopping(self):
         """
         Prints a shutdown message to stdout.
         """
         ident = self.ident()
-        print('{} for "{}" shutting down. Consumed {} tasks.'.format(
-            ident,
-            self.to_consume,
-            self.tasks_complete
-        ))
+        print(
+            '{} for "{}" shutting down. Consumed {} tasks.'.format(
+                ident, self.to_consume, self.tasks_complete
+            )
+        )
 
     def result(self, result):
         """

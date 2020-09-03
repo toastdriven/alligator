@@ -7,8 +7,14 @@ from .utils import determine_module, determine_name, import_attr
 
 class Task(object):
     def __init__(
-        self, task_id=None, retries=0, async=True, on_start=None,
-        on_success=None, on_error=None, depends_on=None
+        self,
+        task_id=None,
+        retries=0,
+        is_async=True,
+        on_start=None,
+        on_success=None,
+        on_error=None,
+        depends_on=None,
     ):
         """
         A base class for managing the execution & serialization of tasks.
@@ -20,7 +26,7 @@ class Task(object):
             # Create the task itself.
             task = Task()
             # ...or...
-            task = Task(task_id='my-unique-id', retries=4, async=False)
+            task = Task(task_id='my-unique-id', retries=4, is_async=False)
 
             # Hook up what will be called when the task comes off the queue.
             task.to_call(email_followers, emails=user.followers.emails())
@@ -33,9 +39,9 @@ class Task(object):
             fails (throws an exception). Defaults to ``0`` (no retries).
         :type retries: integer
 
-        :param async: (Optional) If the task should be run asynchronously or
+        :param is_async: (Optional) If the task should be run asynchronously or
             not. Defaults to ``True``.
-        :type async: bool
+        :type is_async: bool
 
         :param on_start: (Optional) A hook function to run when the task is
             first pulled off the queue. Defaults to ``None``.
@@ -56,7 +62,7 @@ class Task(object):
         """
         self.task_id = task_id
         self.retries = int(retries)
-        self.async = async
+        self.is_async = is_async
         self.status = WAITING
         self.on_start = on_start
         self.on_success = on_success
@@ -146,32 +152,32 @@ class Task(object):
         :returns: A JSON strong of the task data.
         """
         data = {
-            'task_id': self.task_id,
-            'retries': self.retries,
-            'async': self.async,
-            'module': determine_module(self.func),
-            'callable': determine_name(self.func),
-            'args': self.func_args,
-            'kwargs': self.func_kwargs,
-            'options': {},
+            "task_id": self.task_id,
+            "retries": self.retries,
+            "is_async": self.is_async,
+            "module": determine_module(self.func),
+            "callable": determine_name(self.func),
+            "args": self.func_args,
+            "kwargs": self.func_kwargs,
+            "options": {},
         }
 
         if self.on_start:
-            data['options']['on_start'] = {
-                'module': determine_module(self.on_start),
-                'callable': determine_name(self.on_start),
+            data["options"]["on_start"] = {
+                "module": determine_module(self.on_start),
+                "callable": determine_name(self.on_start),
             }
 
         if self.on_success:
-            data['options']['on_success'] = {
-                'module': determine_module(self.on_success),
-                'callable': determine_name(self.on_success),
+            data["options"]["on_success"] = {
+                "module": determine_module(self.on_success),
+                "callable": determine_name(self.on_success),
             }
 
         if self.on_error:
-            data['options']['on_error'] = {
-                'module': determine_module(self.on_error),
-                'callable': determine_name(self.on_error),
+            data["options"]["on_error"] = {
+                "module": determine_module(self.on_error),
+                "callable": determine_name(self.on_error),
             }
 
         return json.dumps(data)
@@ -184,7 +190,7 @@ class Task(object):
 
         The data must be similar in format to what comes from
         ``Task.serialize`` (a JSON-serialized dictionary). Required keys are
-        ``task_id``, ``retries`` & ``async``.
+        ``task_id``, ``retries`` & ``is_async``.
 
         :param data: A JSON-serialized string of the task data
         :type data: string
@@ -193,33 +199,31 @@ class Task(object):
         :rtype: A ``Task`` instance
         """
         data = json.loads(data)
-        options = data.get('options', {})
+        options = data.get("options", {})
 
         task = cls(
-            task_id=data['task_id'],
-            retries=data['retries'],
-            async=data['async']
+            task_id=data["task_id"],
+            retries=data["retries"],
+            is_async=data["is_async"],
         )
 
-        func = import_attr(data['module'], data['callable'])
-        task.to_call(func, *data.get('args', []), **data.get('kwargs', {}))
+        func = import_attr(data["module"], data["callable"])
+        task.to_call(func, *data.get("args", []), **data.get("kwargs", {}))
 
-        if options.get('on_start'):
+        if options.get("on_start"):
             task.on_start = import_attr(
-                options['on_start']['module'],
-                options['on_start']['callable']
+                options["on_start"]["module"], options["on_start"]["callable"]
             )
 
-        if options.get('on_success'):
+        if options.get("on_success"):
             task.on_success = import_attr(
-                options['on_success']['module'],
-                options['on_success']['callable']
+                options["on_success"]["module"],
+                options["on_success"]["callable"],
             )
 
-        if options.get('on_error'):
+        if options.get("on_error"):
             task.on_error = import_attr(
-                options['on_error']['module'],
-                options['on_error']['callable']
+                options["on_error"]["module"], options["on_error"]["callable"]
             )
 
         return task

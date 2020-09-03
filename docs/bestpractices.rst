@@ -136,15 +136,15 @@ resolutions to this:
     )
 
 
-Use Environment Variables or Settings for ``Task.async``
-========================================================
+Use Environment Variables or Settings for ``Task.is_async``
+===========================================================
 
 If you're just using ``gator.task`` & trying to write tests, you may have a
 hard time verifying behavior in an integration test (though you should be able
 to just unit test the task function).
 
 On the other hand, if you use the ``gator.options`` context manager & supply
-an ``async=False`` execution option, integration tests become easy, as the
+an ``is_async=False`` execution option, integration tests become easy, as the
 expense of possibly accidentally committing that & causing issues in production.
 
 The best approach is to use the ``gator.options`` context manager, but use
@@ -159,7 +159,7 @@ an environment variable/setting to control if things run asynchronously.
 
 
     def some_view(request):
-        with gator.options(async=os.environ['ALLIGATOR_ASYNC']) as opts:
+        with gator.options(is_async=os.environ['ALLIGATOR_ASYNC']) as opts:
             opts.task(expensive_thing)
 
 This allows you to set ``export ALLIGATOR_ASYNC=False`` in development/testing

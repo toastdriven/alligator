@@ -103,7 +103,7 @@ Custom Task Classes
 ===================
 
 Sometimes, just the built-in arguments for ``Task`` (like ``retries``,
-``async``, ``on_start``/``on_success``/``on_error``) may not be enough. Or
+``is_async``, ``on_start``/``on_success``/``on_error``) may not be enough. Or
 perhaps your hook methods will *always* be the same & you don't want to have to
 pass them all the time. Or perhaps you never need the hook methods, but are
 running into payload size restrictions by your preferred backend & need some
@@ -125,8 +125,8 @@ follow the protocol), but subclassing is easier here.
 
 
     class SkinnyTask(Task):
-        # We're both going to ignore some keys (async, options) we don't care
-        # about, as well as compress/decompress the payload.
+        # We're both going to ignore some keys (is_async, options) we don't
+        # care about, as well as compress/decompress the payload.
         def serialize(self):
             data = {
                 'task_id': self.task_id,
@@ -147,7 +147,7 @@ follow the protocol), but subclassing is easier here.
             task = cls(
                 task_id=data['task_id'],
                 retries=data['retries'],
-                async=data['async']
+                is_async=data['is_async']
             )
 
             func = import_attr(data['module'], data['callable'])

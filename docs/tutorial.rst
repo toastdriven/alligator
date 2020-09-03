@@ -421,7 +421,7 @@ Testing Tasks
 All of this is great, but if you can't test the task, you might as well not
 have code.
 
-Alligator supports an ``async=False`` option, which means that
+Alligator supports an ``is_async=False`` option, which means that
 rather than being put on the queue, your task runs right away (acting like you
 just called the function, but with all the retries & hooks included).
 
@@ -429,7 +429,7 @@ just called the function, but with all the retries & hooks included).
 
     # Bonus points for using ``settings.DEBUG`` (or similar) instead of a
     # hard-coded ``False``.
-    with gator.options(async=False) as opts:
+    with gator.options(is_async=False) as opts:
         opts.task(send_post_email, request.user.pk, post.pk)
 
 Now your existing integration tests (from before converting to offline tasks)

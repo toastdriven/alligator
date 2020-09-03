@@ -4,7 +4,9 @@ from .utils import import_attr
 
 
 class Gator(object):
-    def __init__(self, conn_string, queue_name=ALL, task_class=Task, backend_class=None):
+    def __init__(
+        self, conn_string, queue_name=ALL, task_class=Task, backend_class=None
+    ):
         """
         A coordination for scheduling & processing tasks.
 
@@ -64,9 +66,9 @@ class Gator(object):
 
         :returns: A backend ``Client`` instance
         """
-        backend_name, _ = conn_string.split(':', 1)
-        backend_path = 'alligator.backends.{}_backend'.format(backend_name)
-        client_class = import_attr(backend_path, 'Client')
+        backend_name, _ = conn_string.split(":", 1)
+        backend_path = "alligator.backends.{}_backend".format(backend_name)
+        client_class = import_attr(backend_path, "Client")
         return client_class(conn_string)
 
     def len(self):
@@ -85,13 +87,13 @@ class Gator(object):
         ``Gator.options`` context manager for creating a task. Call this
         only if you have specific needs or know what you're doing.
 
-        If the ``Task`` has the ``async = False`` option, the task will be
+        If the ``Task`` has the ``is_async = False`` option, the task will be
         run immediately (in-process). This is useful for development and
         in testing.
 
         Ex::
 
-            task = Task(async=False, retries=3)
+            task = Task(is_async=False, retries=3)
             finished = gator.push(task, increment, incr_by=2)
 
         :param task: A mostly-configured task
@@ -111,11 +113,9 @@ class Gator(object):
         task.to_call(func, *args, **kwargs)
         data = task.serialize()
 
-        if task.async:
+        if task.is_async:
             task.task_id = self.backend.push(
-                self.queue_name,
-                task.task_id,
-                data
+                self.queue_name, task.task_id, data
             )
         else:
             self.execute(task)
@@ -149,7 +149,8 @@ class Gator(object):
         Gets a specific task, by ``task_id`` off the queue & runs it.
 
         Using this is not as performant (because it has to search the queue),
-        but can be useful if you need to specifically handle a task *right now*.
+        but can be useful if you need to specifically handle a task
+        *right now*.
 
         Ex::
 
@@ -202,7 +203,7 @@ class Gator(object):
 
         Ex::
 
-            task = Task(async=False, retries=5)
+            task = Task(is_async=False, retries=5)
             task.to_call(add, 101, 35)
             finished_task = gator.execute(task)
 
@@ -218,13 +219,11 @@ class Gator(object):
                 task.retries -= 1
                 task.to_retrying()
 
-                if task.async:
+                if task.is_async:
                     # Place it back on the queue.
                     data = task.serialize()
                     task.task_id = self.backend.push(
-                        self.queue_name,
-                        task.task_id,
-                        data
+                        self.queue_name, task.task_id, data
                     )
                 else:
                     return self.execute(task)
@@ -238,9 +237,9 @@ class Gator(object):
         This will instantiate a ``Gator.task_class`` instance, configure
         the callable & its arguments, then push it onto the queue.
 
-        You'll typically want to use either this method or the ``Gator.options``
-        context manager (if you need to configure the ``Task`` arguments, such
-        as retries, async, task_id, etc.)
+        You'll typically want to use either this method or the
+        ``Gator.options`` context manager (if you need to configure the
+        ``Task`` arguments, such as retries, is_async, task_id, etc.)
 
         Ex::
 
