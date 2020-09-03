@@ -1,10 +1,7 @@
-import boto.sqs
-from boto.sqs.jsonmessage import JSONMessage
+from urllib.parse import urlparse
 
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+import boto3
+from botocore.config import Config
 
 
 class Client(object):
@@ -18,20 +15,22 @@ class Client(object):
         """
         self.conn_string = conn_string
         bits = urlparse(self.conn_string)
-        self.conn = self.get_connection(
-            region=bits.hostname
-        )
+        self.conn = self.get_connection(region=bits.hostname)
+        self._queue = None
 
     def get_connection(self, region):
         """
         Returns a ``SQSConnection`` connection instance.
         """
-        return boto.sqs.connect_to_region(region)
+        config = Config(region_name=region)
+        return boto3.resource("sqs", config=config)
 
     def _get_queue(self, queue_name):
-        queue = self.conn.get_queue(queue_name)
-        queue.set_message_class(JSONMessage)
-        return queue
+        if self._queue is None:
+            queue_url = self.conn.get_queue_url(queue_name)
+            self._queue = self.conn.Queue(queue_url)
+
+        return self._queue
 
     def len(self, queue_name):
         """
@@ -74,9 +73,8 @@ class Client(object):
         """
         # SQS doesn't let you specify a task id.
         queue = self._get_queue(queue_name)
-        message = queue.new_message(body=data)
-        queue.write(message)
-        return message.id
+        res = queue.send_message(body=data)
+        return res.get("MessageId")
 
     def pop(self, queue_name):
         """
@@ -90,10 +88,11 @@ class Client(object):
         :rtype: string
         """
         queue = self._get_queue(queue_name)
-        message = queue.read()
+        messages = queue.receive_messages(MaxNumberOfMessages=1)
 
-        if message:
-            data = message.get_body()
+        if messages:
+            message = messages[0]
+            data = message.body
             return data
 
     def get(self, queue_name, task_id):
@@ -101,7 +100,5 @@ class Client(object):
         Unsupported, as SQS does not include this functionality.
         """
         raise NotImplementedError(
-            'SQS does not support fetching a specific message off the queue.'
+            "SQS does not support fetching a specific message off the queue."
         )
-
-

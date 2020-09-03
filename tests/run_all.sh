@@ -11,4 +11,12 @@ pytest -s -v tests
 echo
 echo
 
-# FIXME: Add SQS tests here.
+if [[ ! -z "${ALLIGATOR_TESTS_INCLUDE_SQS}" ]]; then
+    echo 'SQS Tests'
+    export ALLIGATOR_CONN='sqs://us-west-2/'
+    pytest -s -v tests
+    echo
+    echo
+else
+    echo 'Skipping SQS...'
+fi
