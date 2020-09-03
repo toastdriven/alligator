@@ -10,3 +10,5 @@ export ALLIGATOR_CONN='redis://localhost:6379/9'
 pytest -s -v tests
 echo
 echo
+
+# FIXME: Add SQS tests here.
