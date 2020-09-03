@@ -1,17 +1,14 @@
 language: python
 python:
-  - "3.4"
-  - "3.3"
-  - "2.7"
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.9"
 services:
   - redis-server
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y beanstalkd
-  - "beanstalkd &"
 # command to install dependencies
 install:
-  - pip install -r test${TRAVIS_PYTHON_VERSION:0:1}_reqs.txt
+  - pip install -r requirements-tests.txt
 # command to run tests
 script:
   - tests/run_all.sh

@@ -14,10 +14,8 @@ Latest documentation at http://alligator.readthedocs.org/en/latest/.
 Requirements
 ------------
 
-* Python 2.6+ or Python 3.3+
+* Python 3.6+
 * (Optional) ``redis`` for the Redis backend
-* (Optional) ``beanstalkc`` for the Beanstalk backend
-* (Optional) ``PyYAML`` for the Beanstalk backend
 * (Optional) ``boto>=2.35.0`` for the SQS backend
 
 
@@ -136,11 +134,11 @@ Alligator has 95%+ test coverage & aims to be passing/stable at all times.
 
 If you'd like to run the tests, clone the repo, then run::
 
-    $ virtualenv env2
-    $ . env2/bin/activate
-    $ pip install -r requirements.txt
+    $ virtualenv -p python3 env
+    $ . env/bin/activate
+    $ pip install -r requirements-tests.txt
     $ python setup.py develop
-    $ py.test -s -v --cov=alligator --cov-report=html tests
+    $ pytest -s -v --cov=alligator --cov-report=html tests
 
 
 TODO

@@ -211,7 +211,7 @@ class at the top of the file & making an instance.
     up a different instance elsewhere).
 
 When creating a ``Gator`` instance, you'll need to choose a queue backend.
-Alligator ships with support for local-memory, Redis & Beanstalk. See the
+Alligator ships with support for local-memory, Redis & SQS. See the
 :ref:`installing` docs for setup info.
 
 Local Memory
@@ -243,20 +243,6 @@ Redis is a good option for production and small-large installations.
     gator = Gator('redis://localhost:6379/0')
 
 
-Beanstalk
----------
-
-Beanstalk specializes in queuing & can be used in production at large-very large
-installations.
-
-.. code:: python
-
-    from alligator import Gator
-
-    # Connect to a locally-running Beanstalk server.
-    gator = Gator('beanstalk://localhost:11300/')
-
-
 SQS
 ---
 
@@ -267,7 +253,7 @@ environments.
 
     from alligator import Gator
 
-    # Connect to a locally-running Beanstalk server.
+    # Connect to the globally available SQS service.
     gator = Gator('sqs://us-west-2/')
 
 
