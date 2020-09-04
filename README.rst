@@ -16,18 +16,7 @@ Requirements
 
 * Python 3.6+
 * (Optional) ``redis`` for the Redis backend
-* (Optional) ``boto>=2.35.0`` for the SQS backend
-
-
-WHY?!!1!
---------
-
-* Because I have NIH-syndrome.
-* Or because I longed for something simple (~375 loc).
-* Or because I wanted something with tests (90%+ coverage) & docs.
-* Or because I wanted pluggable backends.
-* Or because testing some other queuing system was a pain.
-* Or because I'm an idiot.
+* (Optional) ``boto3>=1.11.0`` for the SQS backend
 
 
 Basic Usage
@@ -110,23 +99,6 @@ License
 New BSD
 
 
-Future Wishlist
----------------
-
-These things aren't present yet, but maybe someday they will be.
-
-.. code:: python
-
-    # Delayed tasks (run in an hour).
-    with gator.options(run_after=60 * 60) as task:
-        task(this_can_wait)
-
-    # Dependent tasks, will only run if the listed tasks succeed.
-    # Maybe.
-    with gator.options(depends_on=[feeds_job]) as task:
-        task(rebuild_cache)
-
-
 Running Tests
 -------------
 
@@ -140,9 +112,63 @@ If you'd like to run the tests, clone the repo, then run::
     $ python setup.py develop
     $ pytest -s -v --cov=alligator --cov-report=html tests
 
+The full test suite can be run via:
 
-TODO
-----
+    $ export ALLIGATOR_TESTS_INCLUDE_SQS=true
+    $ ./tests/run_all.sh
 
-* Scheduled tasks
-* Dependent tasks
+This requires all backends/queues to be running, as well as valid AWS
+credentials if ``ALLIGATOR_TESTS_INCLUDE_SQS=true`` is set.
+
+
+WHY?!!1!
+--------
+
+* Because I have NIH-syndrome.
+* Or because I longed for something simple (~375 loc).
+* Or because I wanted something with tests (90%+ coverage) & docs.
+* Or because I wanted pluggable backends.
+* Or because testing some other queuing system was a pain.
+* Or because I'm an idiot.
+
+
+Roadmap
+-------
+
+`1.0.0-alpha-1`:
+
+    * Drop Python 2 support
+    * Drop beanstalkc support (Py2-only library)
+    * Fix Python 3 support (mostly around the use of ``async``)
+    * Modernize the SQS backend
+
+`1.0.0-alpha-2`:
+
+    * Scheduled tasks support
+
+        .. code:: python
+
+        # Delayed tasks (run in an hour).
+        with gator.options(run_after=60 * 60) as task:
+            task(this_can_wait)
+
+`1.0.0-alpha-3`:
+
+    * One or more database backends added
+        * Likely SQLite & Postgres
+        * Docs on creating your own
+    * 0.10 -> 1.0 Migration Guide
+
+`1.0.0`:
+
+    * Stable release of all the alpha/beta code
+    * Committing to backward-compatibility in the 1.X series
+
+Post-`1.0.0`:
+
+    * Expand the supported backends
+        * Kafka?
+        * Amazon MQ?
+        * ActiveMQ support?
+        * RabbitMQ support?
+        * ???
