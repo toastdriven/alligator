@@ -3,9 +3,9 @@ from .gator import Gator
 from .tasks import Task
 from .workers import Worker
 
-__author__ = 'Daniel Lindsley'
-__version__ = (0, 11, 0, 'dev')
-__license__ = 'BSD'
+__author__ = "Daniel Lindsley"
+__version__ = (1, 0, 0, "alpha", 1)
+__license__ = "BSD"
 
 
 def version():
@@ -18,5 +18,5 @@ def version():
 
     Returns a string.
     """
-    short = '.'.join([str(bit) for bit in __version__[:3]])
-    return '-'.join([short] + [str(bit) for bit in __version__[3:]])
+    short = ".".join([str(bit) for bit in __version__[:3]])
+    return "-".join([short] + [str(bit) for bit in __version__[3:]])
