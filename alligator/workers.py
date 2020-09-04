@@ -41,6 +41,7 @@ class Worker(object):
         self.to_consume = to_consume
         self.nap_time = nap_time
         self.tasks_complete = 0
+        self.keep_running = False
 
     def ident(self):
         """
@@ -54,6 +55,7 @@ class Worker(object):
         """
         Prints a startup message to stdout.
         """
+        self.keep_running = True
         ident = self.ident()
         print('{} starting & consuming "{}".'.format(ident, self.to_consume))
 
@@ -66,6 +68,7 @@ class Worker(object):
         """
         Prints an interrupt message to stdout.
         """
+        self.keep_running = False
         ident = self.ident()
         print(
             '{} for "{}" saw interrupt. Finishing in-progress task.'.format(
@@ -77,6 +80,7 @@ class Worker(object):
         """
         Prints a shutdown message to stdout.
         """
+        self.keep_running = False
         ident = self.ident()
         print(
             '{} for "{}" shutting down. Consumed {} tasks.'.format(
@@ -98,17 +102,16 @@ class Worker(object):
         ``Worker.max_tasks`` are reached.
         """
         self.starting()
-        self.keep_running = True
 
         def handle(signum, frame):
             self.interrupt()
-            self.keep_running = False
 
         signal.signal(signal.SIGINT, handle)
 
         while self.keep_running:
             if self.max_tasks and self.tasks_complete >= self.max_tasks:
                 self.stopping()
+                break
 
             if self.gator.len():
                 result = self.gator.pop()
