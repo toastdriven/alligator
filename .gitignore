@@ -1,7 +1,9 @@
 .DS_Store
 *.pyc
+__pycache__
 
 .vscode
+poetry.lock
 
 *.egg-info
 build
