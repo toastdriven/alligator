@@ -15,39 +15,32 @@ class SQSTestCase(unittest.TestCase):
 
         self.backend = SQSClient(CONN_STRING)
 
+    def test_all(self):
         # Just reach in & clear things out.
         # This sucks, but is an AWS requirement (only once every 60 seconds).
         self.backend.drop_all("all")
         time.sleep(61)
 
-    def test_init(self):
         self.assertEqual(self.backend.conn_string, CONN_STRING)
 
-    def test_len(self):
         self.assertEqual(self.backend.len("all"), 0)
         self.assertEqual(self.backend.len("something"), 0)
 
-    # def test_drop_all(self):
-    #     self.backend.push('all', 'hello', '{"whee": 1}')
-    #     self.backend.push('all', 'world', '{"whee": 2}')
-    #
-    #     self.assertEqual(self.backend.len('all'), 2)
-    #     self.backend.drop_all('all')
-    #     self.assertEqual(self.backend.len('all'), 0)
-
-    def test_push(self):
-        self.assertEqual(self.backend.len("all"), 0)
-
         self.backend.push("all", "hello", '{"whee": 1}')
+        time.sleep(15)
         self.assertEqual(self.backend.len("all"), 1)
 
-    def test_pop(self):
-        self.backend.push("all", "hello", '{"whee": 1}')
+        self.backend.push("all", "hello", '{"whee": 2}')
+        time.sleep(15)
+        self.assertEqual(self.backend.len("all"), 2)
 
         data = self.backend.pop("all")
-        self.assertEqual(data, "{'whee': 1}")
-        self.assertEqual(self.backend.len("all"), 0)
+        self.assertEqual(data, '{"whee": 1}')
+        time.sleep(15)
+        self.assertEqual(self.backend.len("all"), 1)
 
-    def test_get(self):
         with self.assertRaises(NotImplementedError):
             self.backend.get("all", "world")
+
+        self.backend.drop_all("all")
+        time.sleep(61)

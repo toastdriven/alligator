@@ -27,8 +27,7 @@ class Client(object):
 
     def _get_queue(self, queue_name):
         if self._queue is None:
-            queue_url = self.conn.get_queue_url(queue_name)
-            self._queue = self.conn.Queue(queue_url)
+            self._queue = self.conn.get_queue_by_name(QueueName=queue_name)
 
         return self._queue
 
@@ -44,7 +43,8 @@ class Client(object):
         :rtype: integer
         """
         queue = self._get_queue(queue_name)
-        return queue.count()
+        queue.load()
+        return int(queue.attributes.get("ApproximateNumberOfMessages", 0))
 
     def drop_all(self, queue_name):
         """
@@ -73,7 +73,7 @@ class Client(object):
         """
         # SQS doesn't let you specify a task id.
         queue = self._get_queue(queue_name)
-        res = queue.send_message(body=data)
+        res = queue.send_message(MessageBody=data)
         return res.get("MessageId")
 
     def pop(self, queue_name):
