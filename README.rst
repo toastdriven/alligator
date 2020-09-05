@@ -140,7 +140,6 @@ Roadmap
     * One or more database backends added
         * Likely SQLite & Postgres
         * Docs on creating your own
-    * 0.10 -> 1.0 Migration Guide
 
 `1.0.0`:
 
