@@ -13,6 +13,7 @@ pytest = "^6.0.1"
 pytest-cov = "^2.10.1"
 redis = "^3.5.3"
 boto3 = "^1.14.55"
+sphinx = "^3.2.1"
 
 [build-system]
 requires = ["poetry>=0.12"]

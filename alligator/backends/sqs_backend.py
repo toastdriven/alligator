@@ -1,3 +1,4 @@
+import time
 from urllib.parse import urlparse
 
 import boto3
@@ -57,7 +58,7 @@ class Client(object):
         queue = self._get_queue(queue_name)
         queue.purge()
 
-    def push(self, queue_name, task_id, data):
+    def push(self, queue_name, task_id, data, delay_until=None):
         """
         Pushes a task onto the queue.
 
@@ -71,9 +72,20 @@ class Client(object):
         :param data: The relevant data for the task.
         :type data: string
         """
+        kwargs = {
+            "MessageBody": data,
+        }
+
+        if delay_until is not None:
+            now = time.time()
+            delay_by = delay_until - now
+
+            if delay_by > 0:
+                kwargs["DelaySeconds"] = delay_by
+
         # SQS doesn't let you specify a task id.
         queue = self._get_queue(queue_name)
-        res = queue.send_message(MessageBody=data)
+        res = queue.send_message(**kwargs)
         return res.get("MessageId")
 
     def pop(self, queue_name):

@@ -1,5 +1,6 @@
 import json
 import unittest
+from unittest import mock
 
 from alligator.constants import WAITING, SUCCESS, FAILED, RETRYING, CANCELED
 from alligator.tasks import Task
@@ -35,12 +36,16 @@ class TaskTestCase(unittest.TestCase):
         self.assertEqual(task.on_success, None)
         self.assertEqual(task.on_error, None)
         self.assertEqual(task.depends_on, None)
+        self.assertEqual(task.delay_until, None)
         self.assertEqual(task.status, WAITING)
         self.assertEqual(task.func, None)
         self.assertEqual(task.func_args, [])
         self.assertEqual(task.func_kwargs, {})
 
-    def test_custom_init(self):
+    @mock.patch("time.time")
+    def test_custom_init(self, mock_time):
+        mock_time.return_value = 12345678
+
         task = Task(
             task_id="hello",
             retries=3,
@@ -49,6 +54,7 @@ class TaskTestCase(unittest.TestCase):
             on_success=success,
             on_error=error,
             depends_on=["id1", "id3", "id4"],
+            delay_by=60 * 2,
         )
         self.assertNotEqual(task.task_id, None)
         self.assertEqual(task.retries, 3)
@@ -57,6 +63,31 @@ class TaskTestCase(unittest.TestCase):
         self.assertEqual(task.on_success, success)
         self.assertEqual(task.on_error, error)
         self.assertEqual(task.depends_on, ["id1", "id3", "id4"])
+        self.assertEqual(task.delay_until, 12345798)
+        self.assertEqual(task.status, WAITING)
+        self.assertEqual(task.func, None)
+        self.assertEqual(task.func_args, [])
+        self.assertEqual(task.func_kwargs, {})
+
+    def test_custom_init_delay_until(self):
+        task = Task(
+            task_id="hello",
+            retries=3,
+            is_async=False,
+            on_start=start,
+            on_success=success,
+            on_error=error,
+            depends_on=["id1", "id3", "id4"],
+            delay_until=12345798,
+        )
+        self.assertNotEqual(task.task_id, None)
+        self.assertEqual(task.retries, 3)
+        self.assertEqual(task.is_async, False)
+        self.assertEqual(task.on_start, start)
+        self.assertEqual(task.on_success, success)
+        self.assertEqual(task.on_error, error)
+        self.assertEqual(task.depends_on, ["id1", "id3", "id4"])
+        self.assertEqual(task.delay_until, 12345798)
         self.assertEqual(task.status, WAITING)
         self.assertEqual(task.func, None)
         self.assertEqual(task.func_args, [])
@@ -109,6 +140,7 @@ class TaskTestCase(unittest.TestCase):
         # Shenanigans. You'd normally use the kwargs at ``__init__``...
         self.task.task_id = "hello"
         self.task.on_success = success
+        self.task.delay_until = 12345798
 
         self.task.to_call(run_me, 1, y=2)
         raw_json = self.task.serialize()
@@ -128,7 +160,8 @@ class TaskTestCase(unittest.TestCase):
                     "on_success": {
                         "module": "tests.test_tasks",
                         "callable": "success",
-                    }
+                    },
+                    "delay_until": 12345798,
                 },
             },
         )
@@ -147,7 +180,8 @@ class TaskTestCase(unittest.TestCase):
                     "on_error": {
                         "module": "tests.test_tasks",
                         "callable": "error",
-                    }
+                    },
+                    "delay_until": 12345678,
                 },
             }
         )
@@ -159,6 +193,7 @@ class TaskTestCase(unittest.TestCase):
         self.assertEqual(task.on_success, None)
         self.assertEqual(task.on_error, error)
         self.assertEqual(task.depends_on, None)
+        self.assertEqual(task.delay_until, 12345678)
         self.assertEqual(task.status, WAITING)
         self.assertEqual(task.func, run_me)
         self.assertEqual(task.func_args, (1,))

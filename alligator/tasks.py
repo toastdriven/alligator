@@ -72,18 +72,18 @@ class Task(object):
         self.on_success = on_success
         self.on_error = on_error
         self.depends_on = depends_on
+        self.delay_until = delay_until
 
-        # The delay options are exclusive.
-        if delay_by is not None and delay_until is not None:
-            raise MultipleDelayError(
-                "Only one of 'delay_by' or 'delay_until' can be used at "
-                "a time."
-            )
-
-        if delay_until is not None:
-            self.delay_until = delay_until
-
+        # If the convenience option `delay_by` is seen, calculate the correct
+        # `delay_until`.
         if delay_by is not None:
+            # The delay options are exclusive.
+            if delay_until is not None:
+                raise MultipleDelayError(
+                    "Only one of 'delay_by' or 'delay_until' can be used at "
+                    "a time."
+                )
+
             # Compute the desired timestamp.
             self.delay_until = time.time() + delay_by
 

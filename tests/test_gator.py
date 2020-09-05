@@ -190,7 +190,7 @@ class GatorTestCase(unittest.TestCase):
             t.result = result
 
         with self.gator.options(
-            retries=4, is_async=False, on_success=success
+            retries=4, is_async=False, on_success=success, delay_by=60 * 3
         ) as opts:
             res = opts.task(eventual_success(), 3, 9)
 

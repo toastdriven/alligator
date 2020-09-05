@@ -1,3 +1,7 @@
+import math
+import time
+
+
 class Client(object):
     queues = {}
     task_data = {}
@@ -37,12 +41,12 @@ class Client(object):
         """
         cls = self.__class__
 
-        for task_id in cls.queues.get(queue_name, []):
+        for task_id, _ in cls.queues.get(queue_name, []):
             cls.task_data.pop(task_id, None)
 
         cls.queues[queue_name] = []
 
-    def push(self, queue_name, task_id, data):
+    def push(self, queue_name, task_id, data, delay_until=None):
         """
         Pushes a task onto the queue.
 
@@ -58,7 +62,7 @@ class Client(object):
         """
         cls = self.__class__
         cls.queues.setdefault(queue_name, [])
-        cls.queues[queue_name].append(task_id)
+        cls.queues[queue_name].append([task_id, delay_until])
         cls.task_data[task_id] = data
         return task_id
 
@@ -75,9 +79,18 @@ class Client(object):
         """
         cls = self.__class__
         queue = cls.queues.get(queue_name, [])
+        now = math.floor(time.time())
 
-        if queue:
-            task_id = queue.pop(0)
+        for offset, task_info in enumerate(queue):
+            task_id, delay_until = task_info[0], task_info[1]
+
+            # Check for a delay.
+            if delay_until is not None:
+                if now < delay_until:
+                    continue
+
+            # We've found one we can process.
+            queue.pop(offset)
             return cls.task_data.pop(task_id, None)
 
     def get(self, queue_name, task_id):
@@ -98,11 +111,7 @@ class Client(object):
         cls = self.__class__
         queue = cls.queues.get(queue_name, [])
 
-        if queue:
-            try:
-                offset = queue.index(task_id)
-            except ValueError:
-                return None
-
-            queue.pop(offset)
-            return cls.task_data.pop(task_id, None)
+        for offset, task_info in enumerate(queue):
+            if task_info[0] == task_id:
+                queue.pop(offset)
+                return cls.task_data.pop(task_id, None)

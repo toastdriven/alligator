@@ -1,5 +1,5 @@
 #!/bin/bash
-export ALLIGATOR_SLOW=true
+# export ALLIGATOR_SLOW=true
 
 echo 'Locmem Tests'
 export ALLIGATOR_CONN='locmem://'
