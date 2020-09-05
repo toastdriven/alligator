@@ -9,7 +9,8 @@ This release adds support for delayed/scheduled tasks.
 Features
 --------
 
-* Added delayed/scheduled task support. (SHA: `da33d1a` & `a9f2d58`)
+* Added delayed/scheduled task support. (SHA: `da33d1a`, `a9f2d58`, &
+  `9266d20`)
 * Added ``poetry`` support. (SHA: `2643b40`)
 
 
@@ -17,3 +18,14 @@ Bugfixes
 --------
 
 * Fixed the executable permission on ``latergator``. (SHA: `2d176a4`)
+* Formatted all the code with `black`. (SHA: `3cff2cc`)
+
+
+Documentation
+-------------
+
+* Added 1.0.0-alpha-1 release notes. (SHA: `e83c391`)
+* Added the start of the "Migration to 1.0" guide. (SHA: `cbab984`)
+* Switched the docstring style. (SHA: `e5a6a40`)
+* Added delayed/scheduled tasks documentation. (SHA: `87c0165`)
+* Various documentation fixes. (SHA: `2459956`)
