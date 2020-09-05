@@ -8,12 +8,12 @@ class Client(object):
 
     def __init__(self, conn_string):
         """
-        An in-memory ``Client``. Useful for development & testing.
+        An in-memory `Client`. Useful for development & testing.
 
         Likely not particularly thread-safe.
 
-        :param conn_string: The DSN. Ignored.
-        :type conn_string: string
+        Args:
+            conn_string (str): The DSN. Ignored.
         """
         # We ignore the conn_string, since everything is happening in-memory.
         pass
@@ -22,12 +22,12 @@ class Client(object):
         """
         Returns the length of the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                `Gator` instance.
 
-        :returns: The length of the queue
-        :rtype: integer
+        Returns:
+            int: The length of the queue
         """
         return len(self.__class__.queues.get(queue_name, []))
 
@@ -35,9 +35,9 @@ class Client(object):
         """
         Drops all the task in the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                `Gator` instance.
         """
         cls = self.__class__
 
@@ -50,15 +50,16 @@ class Client(object):
         """
         Pushes a task onto the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                `Gator` instance.
+            task_id (str): The identifier of the task.
+            data (str): The relevant data for the task.
+            delay_until (float): Optional. The Unix timestamp to delay
+                execution of the task until. Default is `None` (no delay).
 
-        :param task_id: The identifier of the task.
-        :type task_id: string
-
-        :param data: The relevant data for the task.
-        :type data: string
+        Returns:
+            str|uuid: The task's ID
         """
         cls = self.__class__
         cls.queues.setdefault(queue_name, [])
@@ -70,12 +71,12 @@ class Client(object):
         """
         Pops a task off the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                `Gator` instance.
 
-        :returns: The data for the task.
-        :rtype: string
+        Returns:
+            str: The data for the task.
         """
         cls = self.__class__
         queue = cls.queues.get(queue_name, [])
@@ -97,15 +98,13 @@ class Client(object):
         """
         Pops a specific task off the queue by identifier.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name: The name of the queue. Usually handled by the
+                `Gator` instance.
+            task_id (str): The identifier of the task.
 
-        :param task_id: The identifier of the task.
-        :type task_id: string
-
-        :returns: The data for the task.
-        :rtype: string
+        Returns:
+            str: The data for the task.
         """
         # This method is *very* non-thread-safe.
         cls = self.__class__

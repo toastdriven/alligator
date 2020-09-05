@@ -18,6 +18,8 @@ Guide
    bestpractices
    extending
 
+   migration-to-1.0
+
    contributing
    security
 

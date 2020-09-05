@@ -18,23 +18,17 @@ class Worker(object):
             worker = Worker(gator)
             worker.run_forever()
 
-        :param gator: A configured ``Gator`` object
-        :type gator: ``Gator`` instance
-
-        :param max_tasks: (Optional) The maximum number of tasks to consume.
-            Useful if you're concerned about memory leaks or want short-lived
-            workers. Defaults to ``0`` (unlimited tasks).
-        :type max_tasks: integer
-
-        :param to_consume: (Optional) The queue name the worker should consume
-            from. Defaults to ``ALL``.
-        :type to_consume: string
-
-        :param nap_time: (Optional) To prevent high CPU usage in the busy loop,
-            you can specify a time delay (in seconds) between tasks. Set to
-            ``0`` to disable sleep & consume as fast as possible. Defaults to
-            ``0.1``
-        :type nap_time: float
+        Args:
+            gator (Gator): A configured `Gator` object
+            max_tasks (int): Optional. The maximum number of tasks to consume.
+                Useful if you're concerned about memory leaks or want
+                short-lived workers. Defaults to `0` (unlimited tasks).
+            to_consume (str): Optional. The queue name the worker should
+                consume from. Defaults to `ALL`.
+            nap_time (float): Optional. To prevent high CPU usage in the busy
+                loop, you can specify a time delay (in seconds) between
+                tasks. Set to `0` to disable sleep & consume as fast as
+                possible. Defaults to `0.1`
         """
         self.gator = gator
         self.max_tasks = int(max_tasks)
@@ -99,7 +93,7 @@ class Worker(object):
     def run_forever(self):
         """
         Causes the worker to run either forever or until the
-        ``Worker.max_tasks`` are reached.
+        `Worker.max_tasks` are reached.
         """
         self.starting()
 

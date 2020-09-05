@@ -24,21 +24,16 @@ class Gator(object):
 
             gator.task(add, 3, 7)
 
-        :param conn_string: A DSN for connecting to the queue. Passed along
-            to the backend.
-        :type conn_string: string
-
-        :param queue_name: (Optional) The name of the queue the tasks should be
-            placed in. Defaults to ``ALL``.
-        :type queue_name: string
-
-        :param task_class: (Optional) The class to use for instantiating tasks.
-            Defaults to ``Task``.
-        :type task_class: class
-
-        :param backend_class: (Optional) The class to use for instantiating
-            the backend. Defaults to ``None`` (DSN detection).
-        :type backend_class: class
+        Args:
+            conn_string (str): A DSN for connecting to the queue. Passed along
+                to the backend.
+            queue_name (str): Optional. The name of the queue the tasks
+                should be placed in. Defaults to ``ALL``.
+            task_class (class): Optional. The class to use for instantiating
+                tasks. Defaults to ``Task``.
+            backend_class (class): Optional. The class to use for
+                instantiating the backend. Defaults to ``None`` (DSN
+                detection).
         """
         self.conn_string = conn_string
         self.queue_name = queue_name
@@ -60,11 +55,12 @@ class Gator(object):
             # ...or...
             backend = gator.build_backend('redis://127.0.0.1:6379/0')
 
-        :param conn_string: A DSN for connecting to the queue. Passed along
-            to the backend.
-        :type conn_string: string
+        Args:
+            conn_string (str): A DSN for connecting to the queue. Passed along
+                to the backend.
 
-        :returns: A backend ``Client`` instance
+        Returns:
+            Client: A backend ``Client`` instance
         """
         backend_name, _ = conn_string.split(":", 1)
         backend_path = "alligator.backends.{}_backend".format(backend_name)
@@ -75,7 +71,8 @@ class Gator(object):
         """
         Returns the number of remaining queued tasks.
 
-        :returns: An integer count
+        Returns:
+            int: A count of the remaining tasks
         """
         return self.backend.len(self.queue_name)
 
@@ -96,19 +93,14 @@ class Gator(object):
             task = Task(is_async=False, retries=3)
             finished = gator.push(task, increment, incr_by=2)
 
-        :param task: A mostly-configured task
-        :type task: A ``Task`` instance
+        Args:
+            task (Task): A mostly-configured task
+            func (callable): The callable with business logic to execute
+            args (list): Positional arguments to pass to the callable task
+            kwargs (dict): Keyword arguments to pass to the callable task
 
-        :param func: The callable with business logic to execute
-        :type func: callable
-
-        :param args: Positional arguments to pass to the callable task
-        :type args: list
-
-        :param kwargs: Keyword arguments to pass to the callable task
-        :type kwargs: dict
-
-        :returns: The ``Task`` instance
+        Returns:
+            Task: The fleshed-out ``Task`` instance
         """
         task.to_call(func, *args, **kwargs)
         data = task.serialize()
@@ -136,7 +128,8 @@ class Gator(object):
             # machine...
             finished_topmost_task = gator.pop()
 
-        :returns: The completed ``Task`` instance
+        Returns:
+            Task: The completed ``Task`` instance
         """
         data = self.backend.pop(self.queue_name)
 
@@ -158,10 +151,11 @@ class Gator(object):
             # machine...
             finished_task = gator.get('a-specific-uuid-here')
 
-        :param task_id: The identifier of the task to process
-        :type task_id: string
+        Args:
+            task_id (str): The identifier of the task to process
 
-        :returns: The completed ``Task`` instance
+        Returns:
+            Task: The completed ``Task`` instance
         """
         data = self.backend.get(self.queue_name, task_id)
 
@@ -183,10 +177,11 @@ class Gator(object):
             # Whoops, didn't mean to do that.
             gator.cancel(task.task_id)
 
-        :param task_id: The identifier of the task to process
-        :type task_id: string
+        Args:
+            task_id (str): The identifier of the task to process
 
-        :returns: The canceled ``Task`` instance
+        Returns:
+            Task: The canceled ``Task`` instance
         """
         data = self.backend.get(self.queue_name, task_id)
 
@@ -207,10 +202,11 @@ class Gator(object):
             task.to_call(add, 101, 35)
             finished_task = gator.execute(task)
 
-        :param task_id: The identifier of the task to process
-        :type task_id: string
+        Args:
+            task_id (str): The identifier of the task to process
 
-        :returns: The completed ``Task`` instance
+        Returns:
+            Task: The completed ``Task`` instance
         """
         try:
             return task.run()
@@ -245,16 +241,13 @@ class Gator(object):
 
             on_queue = gator.task(increment, incr_by=2)
 
-        :param func: The callable with business logic to execute
-        :type func: callable
+        Args:
+            func (callable): The callable with business logic to execute
+            args (list): Positional arguments to pass to the callable task
+            kwargs (dict): Keyword arguments to pass to the callable task
 
-        :param args: Positional arguments to pass to the callable task
-        :type args: list
-
-        :param kwargs: Keyword arguments to pass to the callable task
-        :type kwargs: dict
-
-        :returns: The ``Task`` instance
+        Returns:
+            Task: The ``Task`` instance
         """
         task = self.task_class()
         return self.push(task, func, *args, **kwargs)
@@ -277,10 +270,11 @@ class Gator(object):
             with gator.options(retries=2, on_success=party_time) as opts:
                 opts.task(increment, incr_by=2678)
 
-        :param kwargs: Keyword arguments to control the task execution
-        :type kwargs: dict
+        Args:
+            kwargs (dict): Keyword arguments to control the task execution
 
-        :returns: An ``Options`` context manager instance
+        Returns:
+            Options: An ``Options`` context manager instance
         """
         return Options(self, **kwargs)
 
@@ -293,11 +287,9 @@ class Options(object):
         Typically, you'd use ``Gator.options``, which creates this context
         manager for you. You probably don't want to directly use this.
 
-        :param gator: A configured ``Gator`` instance.
-        :type gator: ``Gator`` instance
-
-        :param **kwargs: Keyword arguments to control the task execution
-        :type **kwargs: dict
+        Args:
+            gator (Gator): A configured ``Gator`` instance.
+            **kwargs (dict): Keyword arguments to control the task execution
         """
         self.gator = gator
         self.task_kwargs = kwargs
@@ -318,16 +310,13 @@ class Options(object):
 
         You'll typically call this method when specifying advanced options.
 
-        :param func: The callable with business logic to execute
-        :type func: callable
+        Args:
+            func (callable): The callable with business logic to execute
+            args (list): Positional arguments to pass to the callable task
+            kwargs (dict): Keyword arguments to pass to the callable task
 
-        :param args: Positional arguments to pass to the callable task
-        :type args: list
-
-        :param kwargs: Keyword arguments to pass to the callable task
-        :type kwargs: dict
-
-        :returns: The ``Task`` instance
+        Returns:
+            Task: The ``Task`` instance
         """
         task = self.gator.task_class(**self.task_kwargs)
         return self.gator.push(task, func, *args, **kwargs)

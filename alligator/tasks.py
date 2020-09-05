@@ -91,14 +91,10 @@ class Task(object):
 
             task.to_call(my_function, 1, 'c', another=True)
 
-        :param func: The callable with business logic to execute
-        :type func: callable
-
-        :param args: Positional arguments to pass to the callable task
-        :type args: list
-
-        :param kwargs: Keyword arguments to pass to the callable task
-        :type kwargs: dict
+        Args:
+            func (callable): The callable with business logic to execute
+            args (list): Positional arguments to pass to the callable task
+            kwargs (dict): Keyword arguments to pass to the callable task
         """
         self.func = func
         self.func_args = args
@@ -155,7 +151,8 @@ class Task(object):
 
         All data must be JSON-serializable in order to be stored properly.
 
-        :returns: A JSON strong of the task data.
+        Returns:
+            str: A JSON string of the task data.
         """
         data = {
             "task_id": self.task_id,
@@ -201,11 +198,11 @@ class Task(object):
         `Task.serialize` (a JSON-serialized dictionary). Required keys are
         `task_id`, `retries` & `is_async`.
 
-        :param data: A JSON-serialized string of the task data
-        :type data: string
+        Args:
+            data (str): A JSON-serialized string of the task data
 
-        :returns: A populated task
-        :rtype: A `Task` instance
+        Returns:
+            Task: A populated task
         """
         data = json.loads(data)
         options = data.get("options", {})

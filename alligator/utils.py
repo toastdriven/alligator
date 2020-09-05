@@ -13,10 +13,11 @@ def determine_module(func):
         from random import choice
         determine_module(choice) # Returns 'random'
 
-    :param func: The callable
-    :type func: function
+    Args:
+        func (callable): The callable
 
-    :returns: Dotted path string
+    Returns:
+        str: Dotted path string
     """
     return func.__module__
 
@@ -30,10 +31,11 @@ def determine_name(func):
         from random import choice
         determine_name(choice) # Returns 'choice'
 
-    :param func: The callable
-    :type func: function
+    Args:
+        func (callable): The callable
 
-    :returns: Name string
+    Returns:
+        str: Name string
     """
     if hasattr(func, "__name__"):
         return func.__name__
@@ -54,10 +56,11 @@ def import_module(module_name):
 
         mod = import_module('random')
 
-    :param module_name: The dotted Python path
-    :type module_name: string
+    Args:
+        module_name (str): The dotted Python path
 
-    :returns: module
+    Returns:
+        module: The imported module
     """
     try:
         return importlib.import_module(module_name)
@@ -76,13 +79,12 @@ def import_attr(module_name, attr_name):
 
         choice = import_attr('random', 'choice')
 
-    :param module_name: The dotted Python path
-    :type module_name: string
+    Args:
+        module_name (str): The dotted Python path
+        attr_name (str): The attribute name
 
-    :param attr_name: The attribute name
-    :type attr_name: string
-
-    :returns: attribute
+    Returns:
+        attribute
     """
     module = import_module(module_name)
 
