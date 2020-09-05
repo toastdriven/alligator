@@ -1,7 +1,9 @@
 import json
+import time
 import uuid
 
 from .constants import WAITING, SUCCESS, FAILED, RETRYING, CANCELED
+from .exceptions import MultipleDelayError
 from .utils import determine_module, determine_name, import_attr
 
 
@@ -15,6 +17,8 @@ class Task(object):
         on_success=None,
         on_error=None,
         depends_on=None,
+        delay_by=None,
+        delay_until=None,
     ):
         """
         A base class for managing the execution & serialization of tasks.
@@ -68,6 +72,20 @@ class Task(object):
         self.on_success = on_success
         self.on_error = on_error
         self.depends_on = depends_on
+
+        # The delay options are exclusive.
+        if delay_by is not None and delay_until is not None:
+            raise MultipleDelayError(
+                "Only one of 'delay_by' or 'delay_until' can be used at "
+                "a time."
+            )
+
+        if delay_until is not None:
+            self.delay_until = delay_until
+
+        if delay_by is not None:
+            # Compute the desired timestamp.
+            self.delay_until = time.time() + delay_by
 
         self.func = None
         self.func_args = []
@@ -180,23 +198,26 @@ class Task(object):
                 "callable": determine_name(self.on_error),
             }
 
+        if self.delay_until:
+            data["options"]["delay_until"] = self.delay_until
+
         return json.dumps(data)
 
     @classmethod
     def deserialize(cls, data):
         """
-        Given some data from the queue, deserializes it into a ``Task``
+        Given some data from the queue, deserializes it into a `Task`
         instance.
 
         The data must be similar in format to what comes from
-        ``Task.serialize`` (a JSON-serialized dictionary). Required keys are
-        ``task_id``, ``retries`` & ``is_async``.
+        `Task.serialize` (a JSON-serialized dictionary). Required keys are
+        `task_id`, `retries` & `is_async`.
 
         :param data: A JSON-serialized string of the task data
         :type data: string
 
         :returns: A populated task
-        :rtype: A ``Task`` instance
+        :rtype: A `Task` instance
         """
         data = json.loads(data)
         options = data.get("options", {})
@@ -226,22 +247,25 @@ class Task(object):
                 options["on_error"]["module"], options["on_error"]["callable"]
             )
 
+        if options.get("delay_until"):
+            task.delay_until = options["delay_until"]
+
         return task
 
     def run(self):
         """
         Runs the task.
 
-        This fires the ``on_start`` hook function first (if present), passing
+        This fires the `on_start` hook function first (if present), passing
         the task itself.
 
-        Then it runs the target function supplied via ``Task.to_call`` with
+        Then it runs the target function supplied via `Task.to_call` with
         its arguments & stores the result.
 
-        If the target function succeeded, the ``on_success`` hook function is
+        If the target function succeeded, the `on_success` hook function is
         called, passing both the task & the result to it.
 
-        If the target function failed (threw an exception), the ``on_error``
+        If the target function failed (threw an exception), the `on_error`
         hook function is called, passing both the task & the exception to it.
         Then the exception is re-raised.
 

@@ -23,4 +23,13 @@ class UnknownCallableError(AlligatorException):
     """
     Thrown when trying to import an unknown attribute from a module for a task.
     """
+
+    pass
+
+
+class MultipleDelayError(AlligatorException):
+    """
+    Thrown when more than one delay option is provided.
+    """
+
     pass
