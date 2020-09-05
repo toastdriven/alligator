@@ -4,7 +4,7 @@ Alligator
 
 Simple offline task queues. For Python.
 
-"See you later, alligator."
+`"See you later, alligator."`
 
 
 Guide

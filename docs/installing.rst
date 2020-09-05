@@ -57,9 +57,9 @@ in large-scale environments or if you're already using other AWS services.
 It has the benefit of not requiring an installed setup, only an AWS account &
 a credit card, making it the easiest of the production queues to setup.
 
-You'll need to install the ``boto`` packages::
+You'll need to install the ``boto3`` packages::
 
-    $ pip install 'boto>=2.35.0'
+    $ pip install 'boto3>=1.12.0'
 
 .. warning::
 
@@ -76,3 +76,5 @@ You'll need to install the ``boto`` packages::
 
     It's also an excellent choice at large volumes, but you should be aware of
     the shortcomings.
+
+.. _`Amazon SQS`: https://aws.amazon.com/sqs/

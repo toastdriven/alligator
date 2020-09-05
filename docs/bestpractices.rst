@@ -118,7 +118,7 @@ resolutions to this:
 
     If you must share setup (for instance, developing & testing on the same
     machine), use a similar approach to the "Env/Settings for Gator DSN" tip,
-    providing a prefix for your queue name. For example::
+    providing a prefix for your queue name. For example:
 
 .. code:: python
 
