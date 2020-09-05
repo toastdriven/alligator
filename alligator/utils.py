@@ -35,15 +35,13 @@ def determine_name(func):
 
     :returns: Name string
     """
-    if hasattr(func, '__name__'):
+    if hasattr(func, "__name__"):
         return func.__name__
-    elif hasattr(func, '__class__'):
+    elif hasattr(func, "__class__"):
         return func.__class__.__name__
 
     # This shouldn't be possible, but blow up if so.
-    raise AttributeError("Provided callable '{}' has no name.".format(
-        func
-    ))
+    raise AttributeError("Provided callable '{}' has no name.".format(func))
 
 
 def import_module(module_name):

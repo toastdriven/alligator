@@ -35,34 +35,22 @@ class Task(object):
             # Hook up what will be called when the task comes off the queue.
             task.to_call(email_followers, emails=user.followers.emails())
 
-        :param task_id: (Optional) A unique identifier for the task. Defaults
-            to ``None`` (create an ``uuid4``).
-        :type task_id: string
-
-        :param retries: (Optional) The number of times to retry a task if it
-            fails (throws an exception). Defaults to ``0`` (no retries).
-        :type retries: integer
-
-        :param is_async: (Optional) If the task should be run asynchronously or
-            not. Defaults to ``True``.
-        :type is_async: bool
-
-        :param on_start: (Optional) A hook function to run when the task is
-            first pulled off the queue. Defaults to ``None``.
-        :type on_start: function
-
-        :param on_success: (Optional) A hook function to run when the task
-            completes successfully. Defaults to ``None``.
-        :type on_success: function
-
-        :param on_error: (Optional) A hook function to run when the task is
-            fails. If a non-zero number of retries are provided, this will fire
-            **each time** the task fails. Defaults to ``None``.
-        :type on_error: function
-
-        :param depends_on: (Optional) A list of task_ids that must be complete
-            before this task will fire. Defaults to ``None``.
-        :type depends_on: list
+        Args:
+            task_id: (str): Optional. A unique identifier for the task.
+                Defaults to `None` (create a `uuid4`).
+            retries (int): Optional. The number of times to retry a task if it
+                fails (throws an exception). Defaults to `0` (no retries).
+            is_async (bool): Optional. If the task should be run
+                asynchronously or not. Defaults to `True`.
+            on_start (callable): Optional. A hook function to run when the
+                task is first pulled off the queue. Defaults to `None`.
+            on_success (callable): Optional. A hook function to run when the
+                task completes successfully. Defaults to `None`.
+            on_error (callable): Optional. A hook function to run when the
+                task is fails. If a non-zero number of retries are provided,
+                this will fire *each time* the task fails. Defaults to `None`.
+            depends_on (list): Optional. A list of task_ids that must be
+                complete before this task will fire. Defaults to `None`.
         """
         self.task_id = task_id
         self.retries = int(retries)
@@ -120,7 +108,7 @@ class Task(object):
         """
         Sets the task's status as "waiting".
 
-        Useful for the ``on_start/on_success/on_failed`` hook methods for
+        Useful for the `on_start/on_success/on_failed` hook methods for
         figuring out what the status of the task is.
         """
         self.status = WAITING
@@ -129,7 +117,7 @@ class Task(object):
         """
         Sets the task's status as "success".
 
-        Useful for the ``on_start/on_success/on_failed`` hook methods for
+        Useful for the `on_start/on_success/on_failed` hook methods for
         figuring out what the status of the task is.
         """
         self.status = SUCCESS
@@ -138,7 +126,7 @@ class Task(object):
         """
         Sets the task's status as "failed".
 
-        Useful for the ``on_start/on_success/on_failed`` hook methods for
+        Useful for the `on_start/on_success/on_failed` hook methods for
         figuring out what the status of the task is.
         """
         self.status = FAILED
@@ -147,7 +135,7 @@ class Task(object):
         """
         Sets the task's status as "canceled".
 
-        Useful for the ``on_start/on_success/on_failed`` hook methods for
+        Useful for the `on_start/on_success/on_failed` hook methods for
         figuring out what the status of the task is.
         """
         self.status = CANCELED
@@ -156,14 +144,14 @@ class Task(object):
         """
         Sets the task's status as "retrying".
 
-        Useful for the ``on_start/on_success/on_failed`` hook methods for
+        Useful for the `on_start/on_success/on_failed` hook methods for
         figuring out what the status of the task is.
         """
         self.status = RETRYING
 
     def serialize(self):
         """
-        Serializes the ``Task`` data for storing in the queue.
+        Serializes the `Task` data for storing in the queue.
 
         All data must be JSON-serializable in order to be stored properly.
 

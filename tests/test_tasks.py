@@ -105,7 +105,7 @@ class TaskTestCase(unittest.TestCase):
         self.assertEqual(self.task.func_kwargs, {"y": 2})
 
     def test_to_waiting(self):
-        # This shouldn't normally be done. Better to use ``task.to_success``...
+        # This shouldn't normally be done. Better to use `task.to_success`...
         self.task.status = SUCCESS
         self.assertEqual(self.task.status, SUCCESS)
 

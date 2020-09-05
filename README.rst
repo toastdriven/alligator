@@ -6,7 +6,7 @@ Alligator
 
 Simple offline task queues. For Python.
 
-"See you later, alligator."
+`"See you later, alligator."`
 
 Latest documentation at http://alligator.readthedocs.org/en/latest/.
 
@@ -16,7 +16,7 @@ Requirements
 
 * Python 3.6+
 * (Optional) ``redis`` for the Redis backend
-* (Optional) ``boto3>=1.11.0`` for the SQS backend
+* (Optional) ``boto3>=1.12.0`` for the SQS backend
 
 
 Basic Usage
