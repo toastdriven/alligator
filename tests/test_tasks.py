@@ -1,3 +1,4 @@
+import datetime
 import json
 import unittest
 from unittest import mock
@@ -88,6 +89,32 @@ class TaskTestCase(unittest.TestCase):
         self.assertEqual(task.on_error, error)
         self.assertEqual(task.depends_on, ["id1", "id3", "id4"])
         self.assertEqual(task.delay_until, 12345798)
+        self.assertEqual(task.status, WAITING)
+        self.assertEqual(task.func, None)
+        self.assertEqual(task.func_args, [])
+        self.assertEqual(task.func_kwargs, {})
+
+    def test_custom_init_delay_until_datetime(self):
+        du = datetime.datetime(2020, 9, 5, 16, 45, 32)
+
+        task = Task(
+            task_id="hello",
+            retries=3,
+            is_async=False,
+            on_start=start,
+            on_success=success,
+            on_error=error,
+            depends_on=["id1", "id3", "id4"],
+            delay_until=du,
+        )
+        self.assertNotEqual(task.task_id, None)
+        self.assertEqual(task.retries, 3)
+        self.assertEqual(task.is_async, False)
+        self.assertEqual(task.on_start, start)
+        self.assertEqual(task.on_success, success)
+        self.assertEqual(task.on_error, error)
+        self.assertEqual(task.depends_on, ["id1", "id3", "id4"])
+        self.assertEqual(task.delay_until, 1599342332.0)
         self.assertEqual(task.status, WAITING)
         self.assertEqual(task.func, None)
         self.assertEqual(task.func_args, [])

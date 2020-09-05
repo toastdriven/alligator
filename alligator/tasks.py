@@ -1,3 +1,4 @@
+import datetime
 import json
 import time
 import uuid
@@ -51,6 +52,12 @@ class Task(object):
                 this will fire *each time* the task fails. Defaults to `None`.
             depends_on (list): Optional. A list of task_ids that must be
                 complete before this task will fire. Defaults to `None`.
+            delay_by (int): Optional. The number of seconds to delay before
+                the task can be processed. *Mutually exclusive* with
+                `delay_until`.
+            delay_until (float|datetime|date): Optional. The Unix timestamp
+                (or a UTC datetime/date object) to delay processing the task
+                until. *Mutually exclusive* with `delay_by`.
         """
         self.task_id = task_id
         self.retries = int(retries)
@@ -61,6 +68,12 @@ class Task(object):
         self.on_error = on_error
         self.depends_on = depends_on
         self.delay_until = delay_until
+
+        if self.delay_until is not None:
+            if isinstance(
+                self.delay_until, (datetime.datetime, datetime.date)
+            ):
+                self.delay_until = time.mktime(self.delay_until.timetuple())
 
         # If the convenience option `delay_by` is seen, calculate the correct
         # `delay_until`.
