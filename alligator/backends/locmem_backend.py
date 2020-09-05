@@ -59,7 +59,7 @@ class Client(object):
                 execution of the task until. Default is `None` (no delay).
 
         Returns:
-            str|uuid: The task's ID
+            str: The task's ID
         """
         cls = self.__class__
         cls.queues.setdefault(queue_name, [])

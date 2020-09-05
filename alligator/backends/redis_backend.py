@@ -10,9 +10,9 @@ class Client(object):
         """
         A Redis-based ``Client``.
 
-        :param conn_string: The DSN. The host/port/db are parsed out of it.
-            Should be of the format ``redis://host:port/db``
-        :type conn_string: string
+        Args:
+            conn_string (str): The DSN. The host/port/db are parsed out of it.
+                Should be of the format ``redis://host:port/db``
         """
         self.conn_string = conn_string
         bits = urlparse(self.conn_string)
@@ -34,12 +34,12 @@ class Client(object):
         """
         Returns the length of the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                `Gator`` instance.
 
-        :returns: The length of the queue
-        :rtype: integer
+        Returns:
+            int: The length of the queue
         """
         return self.conn.zcard(queue_name)
 
@@ -47,9 +47,9 @@ class Client(object):
         """
         Drops all the task in the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
         """
         task_ids = self.conn.zrange(queue_name, 0, -1)
 
@@ -62,15 +62,16 @@ class Client(object):
         """
         Pushes a task onto the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
+            task_id (str): The identifier of the task.
+            data (str): The relevant data for the task.
+            delay_until (float): Optional. The Unix timestamp to delay
+                processing of the task until. Default is `None`.
 
-        :param task_id: The identifier of the task.
-        :type task_id: string
-
-        :param data: The relevant data for the task.
-        :type data: string
+        Returns:
+            str: The task ID.
         """
         if delay_until is None:
             delay_until = math.ceil(time.time())
@@ -83,12 +84,12 @@ class Client(object):
         """
         Pops a task off the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
 
-        :returns: The data for the task.
-        :rtype: string
+        Returns:
+            str: The data for the task.
         """
         now = math.floor(time.time())
         available_to_pop = self.conn.zrange(queue_name, 0, now)
@@ -106,15 +107,13 @@ class Client(object):
         """
         Pops a specific task off the queue by identifier.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
+            task_id (str): The identifier of the task.
 
-        :param task_id: The identifier of the task.
-        :type task_id: string
-
-        :returns: The data for the task.
-        :rtype: string
+        Returns:
+            str: The data for the task.
         """
         self.conn.zrem(queue_name, task_id)
         data = self.conn.get(task_id)

@@ -10,9 +10,9 @@ class Client(object):
         """
         A Amazon SQS-based ``Client``.
 
-        :param conn_string: The DSN. The region is parsed out of it.
-            Should be of the format ``sqs://region/``
-        :type conn_string: string
+        Args:
+            conn_string (str): The DSN. The region is parsed out of it.
+                Should be of the format ``sqs://region-name/``
         """
         self.conn_string = conn_string
         bits = urlparse(self.conn_string)
@@ -36,12 +36,12 @@ class Client(object):
         """
         Returns the length of the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
 
-        :returns: The length of the queue
-        :rtype: integer
+        Returns:
+            int: The length of the queue
         """
         queue = self._get_queue(queue_name)
         queue.load()
@@ -51,9 +51,9 @@ class Client(object):
         """
         Drops all the task in the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
         """
         queue = self._get_queue(queue_name)
         queue.purge()
@@ -62,15 +62,16 @@ class Client(object):
         """
         Pushes a task onto the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
+            task_id (str): The identifier of the task.
+            data (str): The relevant data for the task.
+            delay_until (float): Optional. The Unix timestamp to delay
+                processing of the task until. Default is `None`.
 
-        :param task_id: The identifier of the task.
-        :type task_id: string
-
-        :param data: The relevant data for the task.
-        :type data: string
+        Returns:
+            str: The task ID.
         """
         kwargs = {
             "MessageBody": data,
@@ -92,12 +93,12 @@ class Client(object):
         """
         Pops a task off the queue.
 
-        :param queue_name: The name of the queue. Usually handled by the
-            ``Gator`` instance.
-        :type queue_name: string
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
 
-        :returns: The data for the task.
-        :rtype: string
+        Returns:
+            str: The data for the task.
         """
         queue = self._get_queue(queue_name)
         messages = queue.receive_messages(MaxNumberOfMessages=1)
