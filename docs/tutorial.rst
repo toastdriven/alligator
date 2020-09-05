@@ -262,6 +262,22 @@ environments.
 .. _`Amazon SQS`: http://aws.amazon.com/sqs/
 
 
+SQLite
+------
+
+SQLite excels in small/light loads & simple setups (or development).
+
+.. code:: python
+
+    from alligator import Gator
+
+    # Setup the SQLite database & the `all` queue table.
+    gator = Gator('sqlite:///var/data/sqlite/my_queue.db')
+
+    # This only needs to be run *once* per-queue.
+    gator.backend.setup_tables("all")
+
+
 Put the Task on the Queue
 =========================
 

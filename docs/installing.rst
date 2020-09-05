@@ -78,3 +78,19 @@ You'll need to install the ``boto3`` packages::
     the shortcomings.
 
 .. _`Amazon SQS`: https://aws.amazon.com/sqs/
+
+
+SQLite
+------
+
+A file-backed database. It's fast, lightweight & easy to work with.
+Python 3 ships with built-in support & there's no server to run. Suitable
+for small/light loads & simple setups (or development).
+
+You can also install via other package managers::
+
+    # On Mac with Homebrew
+    $ brew install sqlite
+
+    # On Ubuntu
+    $ sudo aptitude install sqlite3

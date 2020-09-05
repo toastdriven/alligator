@@ -1,7 +1,7 @@
 #!/bin/bash
 # export ALLIGATOR_SLOW=true
 
-echo 'Locmem Tests'
+echo 'Locmem & SQLite Tests'
 export ALLIGATOR_CONN='locmem://'
 pytest -s -v --cov=alligator --cov-report=html tests
 echo

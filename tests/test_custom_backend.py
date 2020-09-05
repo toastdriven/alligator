@@ -2,11 +2,10 @@ import os
 import unittest
 from unittest import mock
 
+from alligator.backends.sqlite_backend import Client as SQLiteClient
 from alligator.constants import ALL
 from alligator.gator import Gator, Options
 from alligator.tasks import Task
-
-from .sqlite_backend import Client as SQLiteClient
 
 
 def add(a, b):
@@ -24,7 +23,7 @@ class CustomBackendTestCase(unittest.TestCase):
             pass
 
         self.gator = Gator(self.conn_string, backend_class=SQLiteClient)
-        self.gator.backend._setup_tables()
+        self.gator.backend.setup_tables()
 
     def test_everything(self):
         self.assertEqual(self.gator.backend.len(ALL), 0)

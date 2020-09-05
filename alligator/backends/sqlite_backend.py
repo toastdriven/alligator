@@ -4,6 +4,13 @@ import time
 
 class Client(object):
     def __init__(self, conn_string):
+        """
+        A SQLite-based ``Client``.
+
+        Args:
+            conn_string (str): The DSN. The host/port/db are parsed out of it.
+                Should be of the format ``sqlite:///path/to/db/file.db``
+        """
         # This is actually the filepath to the DB file.
         self.conn_string = conn_string
         # Kill the 'sqlite://' portion.
@@ -20,7 +27,14 @@ class Client(object):
 
         return cur
 
-    def _setup_tables(self, queue_name="all"):
+    def setup_tables(self, queue_name="all"):
+        """
+        Allows for manual creation of the needed tables.
+
+        Args:
+            queue_name (str): Optional. The name of the queue. Default is
+                `all`.
+        """
         # For manually creating the tables...
         query = (
             "CREATE TABLE `{}` "
@@ -29,16 +43,47 @@ class Client(object):
         self._run_query(query, None)
 
     def len(self, queue_name):
+        """
+        Returns the length of the queue.
+
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                `Gator`` instance.
+
+        Returns:
+            int: The length of the queue
+        """
         query = "SELECT COUNT(task_id) FROM `{}`".format(queue_name)
         cur = self._run_query(query, [])
         res = cur.fetchone()
         return res[0]
 
     def drop_all(self, queue_name):
+        """
+        Drops all the task in the queue.
+
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
+        """
         query = "DELETE FROM `{}`".format(queue_name)
         self._run_query(query, [])
 
     def push(self, queue_name, task_id, data, delay_until=None):
+        """
+        Pushes a task onto the queue.
+
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
+            task_id (str): The identifier of the task.
+            data (str): The relevant data for the task.
+            delay_until (float): Optional. The Unix timestamp to delay
+                processing of the task until. Default is `None`.
+
+        Returns:
+            str: The task ID.
+        """
         if delay_until is None:
             delay_until = int(time.time())
 
@@ -49,6 +94,16 @@ class Client(object):
         return task_id
 
     def pop(self, queue_name):
+        """
+        Pops a task off the queue.
+
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
+
+        Returns:
+            str: The data for the task.
+        """
         now = int(time.time())
         query = (
             "SELECT task_id, data "
@@ -65,6 +120,17 @@ class Client(object):
         return res[1]
 
     def get(self, queue_name, task_id):
+        """
+        Pops a specific task off the queue by identifier.
+
+        Args:
+            queue_name (str): The name of the queue. Usually handled by the
+                ``Gator`` instance.
+            task_id (str): The identifier of the task.
+
+        Returns:
+            str: The data for the task.
+        """
         query = "SELECT task_id, data FROM `{}` WHERE task_id = ?".format(
             queue_name
         )
