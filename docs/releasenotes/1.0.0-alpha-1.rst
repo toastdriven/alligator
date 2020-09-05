@@ -1,0 +1,29 @@
+alligator 1.0.0-alpha-1
+=======================
+
+:date: 2020-09-04
+
+This release modernizes the codebase, and drops Python 2 as well as
+Beanstalk/``beanstalkc`` support.
+
+
+Changes
+-------
+
+* Removed Beanstalk support. (SHA: `368db30`)
+
+    `Note:` This is due to the lack of Python 3 support in the ``beanstalkc``
+    library. If this changes in the future, we'll re-evaluate adding it back
+    in.
+
+* Updated the SQS backend to `boto3`. (SHA: `ee80d69` & `c6fd671`)
+
+
+Bugfixes
+--------
+
+* Changed ``Task.async`` to ``Task.is_async``, due to ``async`` being a
+  reserved word in modern Python 3. (SHA: `bf98511`)
+* Updated all dependencies to more current versions. (SHA: `1d368e3`)
+* Fixed the Redis backend's tests. (SHA: `e793aa9`)
+* Fixed the worker process to correctly exit during testing. (SHA: `9b7b486`)
