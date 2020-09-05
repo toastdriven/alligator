@@ -1,0 +1,19 @@
+alligator 1.0.0-alpha-2
+=======================
+
+:date: 2020-09-05
+
+This release adds support for delayed/scheduled tasks.
+
+
+Features
+--------
+
+* Added delayed/scheduled task support. (SHA: ``)
+* Added ``poetry`` support. (SHA: `2643b40`)
+
+
+Bugfixes
+--------
+
+* Fixed the executable permission on ``latergator``. (SHA: `2d176a4`)
