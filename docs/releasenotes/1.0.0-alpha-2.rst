@@ -9,7 +9,7 @@ This release adds support for delayed/scheduled tasks.
 Features
 --------
 
-* Added delayed/scheduled task support. (SHA: ``)
+* Added delayed/scheduled task support. (SHA: `da33d1a` & `a9f2d58`)
 * Added ``poetry`` support. (SHA: `2643b40`)
 
 

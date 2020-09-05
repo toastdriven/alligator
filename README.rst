@@ -135,23 +135,6 @@ WHY?!!1!
 Roadmap
 -------
 
-`1.0.0-alpha-1`:
-
-    * Drop Python 2 support
-    * Drop beanstalkc support (Py2-only library)
-    * Fix Python 3 support (mostly around the use of ``async``)
-    * Modernize the SQS backend
-
-`1.0.0-alpha-2`:
-
-    * Scheduled tasks support
-
-        .. code:: python
-
-        # Delayed tasks (run in an hour).
-        with gator.options(run_after=60 * 60) as task:
-            task(this_can_wait)
-
 `1.0.0-alpha-3`:
 
     * One or more database backends added

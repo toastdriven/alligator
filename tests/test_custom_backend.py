@@ -24,15 +24,7 @@ class CustomBackendTestCase(unittest.TestCase):
             pass
 
         self.gator = Gator(self.conn_string, backend_class=SQLiteClient)
-        self._setup_tables()
-
-    def _setup_tables(self):
-        # We're just going to assume ``ALL``.
-        query = (
-            "CREATE TABLE `all` "
-            "(task_id text, data text, delay_until integer)"
-        )
-        self.gator.backend._run_query(query, None)
+        self.gator.backend._setup_tables()
 
     def test_everything(self):
         self.assertEqual(self.gator.backend.len(ALL), 0)

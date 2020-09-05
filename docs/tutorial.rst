@@ -415,6 +415,35 @@ Now that task will get three retries when it's processed, making network
 failures much more tolerable.
 
 
+Delaying/Scheduling Tasks
+=========================
+
+You can also choose to either delay the execution of a task by a set number
+of seconds **OR** schedule when the task can first run.
+
+To delay a task, just add the ``delay_by`` parameter:
+
+.. code:: python
+
+    # Don't execute this task for at least 5 minutes.
+    with gator.options(delay_by=60 * 5):
+        opts.task(send_post_email, request.user.pk, post.pk)
+
+To schedule a task in the future, you'll need to provide the ``delay_until``
+parameter, set to a future Unix timestamp:
+
+.. code:: python
+
+    import time
+
+    # There are lots of ways to compute a future timestamp.
+    # For our purposes here, let's just do some simple math.
+    tomorrow = time.time() + (60 * 60 * 24)
+
+    with gator.options(delay_until=tomorrow):
+        opts.task(send_post_email, request.user.pk, post.pk)
+
+
 Testing Tasks
 =============
 

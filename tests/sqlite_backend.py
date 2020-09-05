@@ -20,6 +20,14 @@ class Client(object):
 
         return cur
 
+    def _setup_tables(self, queue_name="all"):
+        # For manually creating the tables...
+        query = (
+            "CREATE TABLE `{}` "
+            "(task_id text, data text, delay_until integer)"
+        ).format(queue_name)
+        self._run_query(query, None)
+
     def len(self, queue_name):
         query = "SELECT COUNT(task_id) FROM `{}`".format(queue_name)
         cur = self._run_query(query, [])
@@ -30,12 +38,14 @@ class Client(object):
         query = "DELETE FROM `{}`".format(queue_name)
         self._run_query(query, [])
 
-    def push(self, queue_name, task_id, data):
-        now = int(time.time())
+    def push(self, queue_name, task_id, data, delay_until=None):
+        if delay_until is None:
+            delay_until = int(time.time())
+
         query = (
             "INSERT INTO `{}` (task_id, data, delay_until) VALUES (?, ?, ?)"
         ).format(queue_name)
-        self._run_query(query, [task_id, data, now])
+        self._run_query(query, [task_id, data, delay_until])
         return task_id
 
     def pop(self, queue_name):
