@@ -1,5 +1,6 @@
 import os
 import redis
+import time
 import unittest
 
 from alligator.backends.redis_backend import Client as RedisClient
@@ -41,6 +42,7 @@ class RedisTestCase(unittest.TestCase):
 
     def test_pop(self):
         self.backend.push("all", "hello", '{"whee": 1}')
+        time.sleep(1)
 
         data = self.backend.pop("all")
         self.assertEqual(data, '{"whee": 1}')
