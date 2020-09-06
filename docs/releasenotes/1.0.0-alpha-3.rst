@@ -1,24 +1,27 @@
 alligator 1.0.0-alpha-3
 =======================
 
-:date: 2020-09-??
+:date: 2020-09-06
 
-This release adds support for a SQLite backend.
+This release adds support for a SQLite backend, as well as bugfixes for the
+delayed/scheduled tasks feature.
 
 
 Features
 --------
 
-* Added official SQLite support. (SHA: ``)
+* Added official SQLite support. (SHA: `7ff4236`)
 
 
 Bugfixes
 --------
 
-* ___ . (SHA: ``)
+* Fixed several bugs around delayed/scheduled tasks. (SHA: `2e51867`)
+* Fixed the SQS backend to delete messages & trimming delays to an int.
+  (SHA: `cd6c4e2`)
 
 
 Documentation
 -------------
 
-* ___ . (SHA: ``)
+* Fixed the Redis & SQS backend docstrings. (SHA: `4fe15e7`)
