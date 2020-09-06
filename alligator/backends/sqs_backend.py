@@ -82,7 +82,7 @@ class Client(object):
             delay_by = delay_until - now
 
             if delay_by > 0:
-                kwargs["DelaySeconds"] = delay_by
+                kwargs["DelaySeconds"] = int(delay_by)
 
         # SQS doesn't let you specify a task id.
         queue = self._get_queue(queue_name)
@@ -106,6 +106,7 @@ class Client(object):
         if messages:
             message = messages[0]
             data = message.body
+            message.delete()
             return data
 
     def get(self, queue_name, task_id):
