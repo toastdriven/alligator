@@ -229,7 +229,8 @@ As of the time of writing, Alligator supports the following clients:
 
 * Locmem
 * Redis
-* Beanstalk
+* SQS
+* SQLite
 
 However, if you have a different datastore or queue you'd like to use, you can
 write a custom backend ``Client`` to talk to that store. For example, let's

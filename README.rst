@@ -135,12 +135,6 @@ WHY?!!1!
 Roadmap
 -------
 
-`1.0.0-alpha-3`:
-
-    * One or more database backends added
-        * Likely SQLite & Postgres
-        * Docs on creating your own
-
 `1.0.0`:
 
     * Stable release of all the alpha/beta code
@@ -150,7 +144,6 @@ Post-`1.0.0`:
 
     * Expand the supported backends
         * Kafka?
-        * Amazon MQ?
         * ActiveMQ support?
         * RabbitMQ support?
         * ???
