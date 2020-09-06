@@ -109,8 +109,10 @@ class Worker(object):
 
             if self.gator.len():
                 result = self.gator.pop()
-                self.tasks_complete += 1
-                self.result(result)
+
+                if result:
+                    self.tasks_complete += 1
+                    self.result(result)
 
             if self.nap_time >= 0:
                 time.sleep(self.nap_time)

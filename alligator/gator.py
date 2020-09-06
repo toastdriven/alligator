@@ -107,7 +107,10 @@ class Gator(object):
 
         if task.is_async:
             task.task_id = self.backend.push(
-                self.queue_name, task.task_id, data
+                self.queue_name,
+                task.task_id,
+                data,
+                delay_until=task.delay_until,
             )
         else:
             self.execute(task)

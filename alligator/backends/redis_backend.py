@@ -92,7 +92,9 @@ class Client(object):
             str: The data for the task.
         """
         now = math.floor(time.time())
-        available_to_pop = self.conn.zrange(queue_name, 0, now)
+        available_to_pop = self.conn.zrangebyscore(
+            queue_name, 0, now, start=0, num=1
+        )
 
         if not len(available_to_pop):
             return None

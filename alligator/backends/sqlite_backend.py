@@ -25,6 +25,7 @@ class Client(object):
         else:
             cur.execute(query, args)
 
+        self.conn.commit()
         return cur
 
     def setup_tables(self, queue_name="all"):
@@ -37,7 +38,7 @@ class Client(object):
         """
         # For manually creating the tables...
         query = (
-            "CREATE TABLE `{}` "
+            "CREATE TABLE `queue_{}` "
             "(task_id text, data text, delay_until integer)"
         ).format(queue_name)
         self._run_query(query, None)
@@ -53,7 +54,7 @@ class Client(object):
         Returns:
             int: The length of the queue
         """
-        query = "SELECT COUNT(task_id) FROM `{}`".format(queue_name)
+        query = "SELECT COUNT(task_id) FROM `queue_{}`".format(queue_name)
         cur = self._run_query(query, [])
         res = cur.fetchone()
         return res[0]
@@ -66,7 +67,7 @@ class Client(object):
             queue_name (str): The name of the queue. Usually handled by the
                 ``Gator`` instance.
         """
-        query = "DELETE FROM `{}`".format(queue_name)
+        query = "DELETE FROM `queue_{}`".format(queue_name)
         self._run_query(query, [])
 
     def push(self, queue_name, task_id, data, delay_until=None):
@@ -85,12 +86,14 @@ class Client(object):
             str: The task ID.
         """
         if delay_until is None:
-            delay_until = int(time.time())
+            delay_until = time.time()
 
         query = (
-            "INSERT INTO `{}` (task_id, data, delay_until) VALUES (?, ?, ?)"
+            "INSERT INTO `queue_{}` "
+            "(task_id, data, delay_until) "
+            "VALUES (?, ?, ?)"
         ).format(queue_name)
-        self._run_query(query, [task_id, data, delay_until])
+        self._run_query(query, [task_id, data, int(delay_until)])
         return task_id
 
     def pop(self, queue_name):
@@ -106,18 +109,21 @@ class Client(object):
         """
         now = int(time.time())
         query = (
-            "SELECT task_id, data "
-            "FROM `{}` "
-            "WHERE delay_until <= ?"
+            "SELECT task_id, data, delay_until "
+            "FROM `queue_{}` "
+            "WHERE delay_until <= ? "
             "LIMIT 1"
         ).format(queue_name)
         cur = self._run_query(query, [now])
         res = cur.fetchone()
 
-        query = "DELETE FROM `{}` WHERE task_id = ?".format(queue_name)
-        self._run_query(query, [res[0]])
+        if res:
+            query = "DELETE FROM `queue_{}` WHERE task_id = ?".format(
+                queue_name
+            )
+            self._run_query(query, [res[0]])
 
-        return res[1]
+            return res[1]
 
     def get(self, queue_name, task_id):
         """
@@ -131,13 +137,17 @@ class Client(object):
         Returns:
             str: The data for the task.
         """
-        query = "SELECT task_id, data FROM `{}` WHERE task_id = ?".format(
-            queue_name
-        )
+        # fmt: off
+        query = (
+            "SELECT task_id, data "
+            "FROM `queue_{}` "
+            "WHERE task_id = ?"
+        ).format(queue_name)
+        # fmt: on
         cur = self._run_query(query, [task_id])
         res = cur.fetchone()
 
-        query = "DELETE FROM `{}` WHERE task_id = ?".format(queue_name)
+        query = "DELETE FROM `queue_{}` WHERE task_id = ?".format(queue_name)
         self._run_query(query, [task_id])
 
         return res[1]
