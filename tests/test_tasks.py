@@ -269,7 +269,7 @@ class TaskTestCase(unittest.TestCase):
 
         # Should succeed.
         task.to_call(success_task, 12, 3)
-        result = task.run()
-        self.assertEqual(result, 15)
+        task.run()
+        self.assertEqual(task.result, 15)
         self.assertTrue(task.started)
         self.assertEqual(task.success_result, 15)

@@ -1,6 +1,8 @@
+import logging
 import os
 import signal
 import time
+import traceback
 
 from alligator.constants import ALL
 
@@ -36,6 +38,20 @@ class Worker(object):
         self.nap_time = nap_time
         self.tasks_complete = 0
         self.keep_running = False
+        self.log = self.get_log()
+
+    def get_log(self):
+        """
+        Sets up logging for the instance.
+
+        Returns:
+            logging.Logger: The log instance.
+        """
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(name)s %(message)s",
+        )
+        return logging.getLogger(__name__)
 
     def ident(self):
         """
@@ -51,12 +67,16 @@ class Worker(object):
         """
         self.keep_running = True
         ident = self.ident()
-        print('{} starting & consuming "{}".'.format(ident, self.to_consume))
+        self.log.info(
+            '{} starting & consuming "{}".'.format(ident, self.to_consume)
+        )
 
         if self.max_tasks:
-            print("{} will die after {} tasks.".format(ident, self.max_tasks))
+            self.log.info(
+                "{} will die after {} tasks.".format(ident, self.max_tasks)
+            )
         else:
-            print("{} will never die.".format(ident))
+            self.log.info("{} will never die.".format(ident))
 
     def interrupt(self):
         """
@@ -64,7 +84,7 @@ class Worker(object):
         """
         self.keep_running = False
         ident = self.ident()
-        print(
+        self.log.info(
             '{} for "{}" saw interrupt. Finishing in-progress task.'.format(
                 ident, self.to_consume
             )
@@ -76,7 +96,7 @@ class Worker(object):
         """
         self.keep_running = False
         ident = self.ident()
-        print(
+        self.log.info(
             '{} for "{}" shutting down. Consumed {} tasks.'.format(
                 ident, self.to_consume, self.tasks_complete
             )
@@ -88,7 +108,36 @@ class Worker(object):
 
         :param result: The result of the task
         """
-        print(result)
+        if result is not None:
+            self.log.info(result)
+
+    def check_and_run_task(self):
+        """
+        Handles the logic of checking for & executing a task.
+
+        `Worker.run_forever` uses this in a loop to actually handle the main
+        logic, though you can call this on your own if you have different
+        needs.
+
+        Returns:
+            bool: `True` if a task was run successfully, `False` if there was
+                no task to process or executing the task failed.
+        """
+        if self.gator.len():
+            try:
+                task = self.gator.pop()
+            except Exception as err:
+                self.log.exception(err)
+                return False
+
+            if task is None:
+                return False
+
+            self.tasks_complete += 1
+            self.result(task.result)
+            return True
+
+        return False
 
     def run_forever(self):
         """
@@ -107,12 +156,7 @@ class Worker(object):
                 self.stopping()
                 break
 
-            if self.gator.len():
-                result = self.gator.pop()
-
-                if result:
-                    self.tasks_complete += 1
-                    self.result(result)
+            self.check_and_run_task()
 
             if self.nap_time >= 0:
                 time.sleep(self.nap_time)

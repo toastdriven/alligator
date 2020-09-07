@@ -36,13 +36,13 @@ class CustomBackendTestCase(unittest.TestCase):
         self.assertEqual(self.gator.backend.len(ALL), 4)
 
         task_1 = self.gator.pop()
-        self.assertEqual(task_1, 4)
+        self.assertEqual(task_1.result, 4)
 
         task_3 = self.gator.get(t3.task_id)
-        self.assertEqual(task_3, 16)
+        self.assertEqual(task_3.result, 16)
 
         task_2 = self.gator.pop()
-        self.assertEqual(task_2, 12)
+        self.assertEqual(task_2.result, 12)
 
         self.assertEqual(self.gator.backend.len(ALL), 1)
 
@@ -70,8 +70,8 @@ class CustomBackendTestCase(unittest.TestCase):
         self.assertEqual(self.gator.backend.len(ALL), 4)
 
         task_1 = self.gator.pop()
-        self.assertEqual(task_1, 4)
+        self.assertEqual(task_1.result, 4)
 
         mock_time.return_value = 123499999
         task_2 = self.gator.pop()
-        self.assertEqual(task_2, 11)
+        self.assertEqual(task_2.result, 11)

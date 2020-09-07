@@ -103,8 +103,8 @@ class GatorTestCase(unittest.TestCase):
         self.gator.push(task, so_computationally_expensive, 1, 1)
         self.assertEqual(self.gator.backend.len(ALL), 1)
 
-        res = self.gator.pop()
-        self.assertEqual(res, 2)
+        complete = self.gator.pop()
+        self.assertEqual(complete.result, 2)
 
     def test_get(self):
         self.assertEqual(self.gator.backend.len(ALL), 0)
@@ -115,11 +115,11 @@ class GatorTestCase(unittest.TestCase):
         self.gator.push(task_2, so_computationally_expensive, 3, 5)
         self.assertEqual(self.gator.backend.len(ALL), 2)
 
-        res = self.gator.get(task_2.task_id)
-        self.assertEqual(res, 8)
+        complete = self.gator.get(task_2.task_id)
+        self.assertEqual(complete.result, 8)
 
-        res = self.gator.get(task_1.task_id)
-        self.assertEqual(res, 2)
+        complete = self.gator.get(task_1.task_id)
+        self.assertEqual(complete.result, 2)
 
     def test_cancel(self):
         self.assertEqual(self.gator.backend.len(ALL), 0)
@@ -138,8 +138,8 @@ class GatorTestCase(unittest.TestCase):
         task = Task(retries=3, is_async=True)
         task.to_call(so_computationally_expensive, 2, 7)
 
-        res = self.gator.execute(task)
-        self.assertEqual(res, 9)
+        complete = self.gator.execute(task)
+        self.assertEqual(complete.result, 9)
         self.assertEqual(task.retries, 3)
         self.assertEqual(task.status, SUCCESS)
 
@@ -173,8 +173,8 @@ class GatorTestCase(unittest.TestCase):
         except IOError:
             pass
 
-        res = self.gator.execute(task)
-        self.assertEqual(res, 9)
+        complete = self.gator.execute(task)
+        self.assertEqual(complete.result, 9)
         self.assertEqual(task.retries, 1)
 
     def test_task(self):

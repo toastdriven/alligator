@@ -68,6 +68,7 @@ class Task(object):
         self.on_error = on_error
         self.depends_on = depends_on
         self.delay_until = delay_until
+        self.result = None
 
         if self.delay_until is not None:
             if isinstance(
@@ -267,13 +268,17 @@ class Task(object):
         hook function is called, passing both the task & the exception to it.
         Then the exception is re-raised.
 
-        Finally, the result is returned.
+        Finally, it returns itself, with `Task.result` set to the result
+        from the target function's execution.
+
+        Returns:
+            Task: The processed Task.
         """
         if self.on_start:
             self.on_start(self)
 
         try:
-            result = self.func(*self.func_args, **self.func_kwargs)
+            self.result = self.func(*self.func_args, **self.func_kwargs)
         except Exception as err:
             self.to_failed()
 
@@ -285,6 +290,6 @@ class Task(object):
         self.to_success()
 
         if self.on_success:
-            self.on_success(self, result)
+            self.on_success(self, self.result)
 
-        return result
+        return self
