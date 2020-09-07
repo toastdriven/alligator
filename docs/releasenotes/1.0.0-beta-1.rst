@@ -16,4 +16,4 @@ Bugfixes
 Documentation
 -------------
 
-* ___ . (SHA: ``)
+* Added more to the Migration Guide. (SHA: `6e48da4`)
