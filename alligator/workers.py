@@ -8,7 +8,14 @@ from alligator.constants import ALL
 
 
 class Worker(object):
-    def __init__(self, gator, max_tasks=0, to_consume=ALL, nap_time=0.1):
+    def __init__(
+        self,
+        gator,
+        max_tasks=0,
+        to_consume=ALL,
+        nap_time=0.1,
+        log_level=logging.INFO,
+    ):
         """
         An object for consuming the queue & running the tasks.
 
@@ -31,6 +38,8 @@ class Worker(object):
                 loop, you can specify a time delay (in seconds) between
                 tasks. Set to `0` to disable sleep & consume as fast as
                 possible. Defaults to `0.1`
+            log_level (int): Optional. The logging level you'd like for
+                output. Default is `logging.INFO`.
         """
         self.gator = gator
         self.max_tasks = int(max_tasks)
@@ -38,20 +47,29 @@ class Worker(object):
         self.nap_time = nap_time
         self.tasks_complete = 0
         self.keep_running = False
-        self.log = self.get_log()
+        self.log_level = log_level
+        self.log = self.get_log(self.log_level)
 
-    def get_log(self):
+    def get_log(self, log_level=logging.INFO):
         """
         Sets up logging for the instance.
+
+        Args:
+            log_level (int): Optional. The logging level you'd like for
+                output. Default is `logging.INFO`.
 
         Returns:
             logging.Logger: The log instance.
         """
-        logging.basicConfig(
-            level=logging.INFO,
-            format="%(asctime)s %(levelname)s %(name)s %(message)s",
+        log = logging.getLogger(__name__)
+        default_format = logging.Formatter(
+            "%(asctime)s %(name)s %(levelname)s %(message)s"
         )
-        return logging.getLogger(__name__)
+        stdout_handler = logging.StreamHandler()
+        stdout_handler.setFormatter(default_format)
+        log.addHandler(stdout_handler)
+        log.setLevel(logging.INFO)
+        return log
 
     def ident(self):
         """
