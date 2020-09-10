@@ -1,7 +1,7 @@
 alligator 1.0.0-beta-1
 ======================
 
-:date: 2020-09-??
+:date: 2020-09-07
 
 This release incorporates all the changes from the 1.0.0-alpha-X releases, as
 well as bugfixes.

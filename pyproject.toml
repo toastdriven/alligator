@@ -4,6 +4,14 @@ version = "1.0.0-beta-2"
 description = "Simple offline task queues."
 authors = ["Daniel Lindsley <daniel@toastdriven.com>"]
 license = "BSD-3-Clause"
+readme = "README.rst"
+repository = "https://github.com/toastdriven/alligator"
+documentation = "https://alligator.readthedocs.io/en/latest/"
+keywords = [
+    "queues",
+    "tasks",
+    "offline",
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"
@@ -15,6 +23,9 @@ redis = "^3.5.3"
 boto3 = "^1.14.55"
 sphinx = "^3.2.1"
 sphinxcontrib-napoleon = "^0.7"
+
+[tool.poetry.scripts]
+# latergator = 'bin/latergator.py'
 
 [build-system]
 requires = ["poetry>=0.12"]
