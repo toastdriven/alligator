@@ -1,0 +1,13 @@
+alligator 1.0.0-beta-2
+======================
+
+:date: 2020-09-10
+
+This release incorporates all the changes from the prior
+1.0.0-beta-X releases, 1.0.0-alpha-X releases, as well as bugfixes.
+
+
+Bugfixes
+--------
+
+* Revised how logging is setup by the `Worker`. (SHA: `d52a877`)
