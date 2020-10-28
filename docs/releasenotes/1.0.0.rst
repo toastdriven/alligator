@@ -1,0 +1,74 @@
+alligator 1.0.0
+===============
+
+:date: 2020-10-28
+
+This marks the official 1.0.0 release of ``alligator``.
+
+Major changes include:
+
+    * Added scheduled & delayed task support
+    * An official SQLite backend
+    * Removed Beanstalk support
+    * Upgraded to ``boto3``
+    * General modernization
+
+This also marks the beginning of API stability for the 1.X.X series of
+releases. While new features & bugfixes will continue to be added, no
+public method signatures will be changed in **backward-incompatible** ways.
+
+This means you should be able to upgrade between versions within the 1.X.X
+series without having to worry about ``alligator``'s API changing & breaking
+code that depends on it.
+
+Lastly, there are no changes from the ``1.0.0-beta-2`` build.
+
+What follows are the *combined* release notes for the prior
+1.0.0-beta-X & 1.0.0-alpha-X releases.
+
+Enjoy & happy queuing!
+
+
+Features
+--------
+
+* Added official SQLite support. (SHA: `7ff4236`)
+* Added delayed/scheduled task support. (SHA: `da33d1a`, `a9f2d58`, &
+  `9266d20`)
+* Added ``poetry`` support. (SHA: `2643b40`)
+* Removed Beanstalk support. (SHA: `368db30`)
+
+    `Note:` This is due to the lack of Python 3 support in the ``beanstalkc``
+    library. If this changes in the future, we'll re-evaluate adding it back
+    in.
+
+* Updated the SQS backend to `boto3`. (SHA: `ee80d69` & `c6fd671`)
+
+
+Bugfixes
+--------
+
+* Revised how logging is setup by the `Worker`. (SHA: `d52a877`)
+* Bugfixes for failed tasks & consistent pop behavior. (SHA: `9d91309`)
+* Fixed several bugs around delayed/scheduled tasks. (SHA: `2e51867`)
+* Fixed the SQS backend to delete messages & trimming delays to an int.
+  (SHA: `cd6c4e2`)
+* Fixed the executable permission on ``latergator``. (SHA: `2d176a4`)
+* Formatted all the code with `black`. (SHA: `3cff2cc`)
+* Changed ``Task.async`` to ``Task.is_async``, due to ``async`` being a
+  reserved word in modern Python 3. (SHA: `bf98511`)
+* Updated all dependencies to more current versions. (SHA: `1d368e3`)
+* Fixed the Redis backend's tests. (SHA: `e793aa9`)
+* Fixed the worker process to correctly exit during testing. (SHA: `9b7b486`)
+
+
+Documentation
+-------------
+
+* Added more to the Migration Guide. (SHA: `6e48da4`)
+* Fixed the Redis & SQS backend docstrings. (SHA: `4fe15e7`)
+* Added 1.0.0-alpha-1 release notes. (SHA: `e83c391`)
+* Added the start of the "Migration to 1.0" guide. (SHA: `cbab984`)
+* Switched the docstring style. (SHA: `e5a6a40`)
+* Added delayed/scheduled tasks documentation. (SHA: `87c0165`)
+* Various documentation fixes. (SHA: `2459956`)

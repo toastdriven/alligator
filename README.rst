@@ -135,11 +135,6 @@ WHY?!!1!
 Roadmap
 -------
 
-`1.0.0`:
-
-    * Stable release of all the alpha/beta code
-    * Committing to backward-compatibility in the 1.X series
-
 Post-`1.0.0`:
 
     * Expand the supported backends

@@ -39,6 +39,7 @@ Release Notes
 .. toctree::
    :maxdepth: 1
 
+   releasenotes/1.0.0
    releasenotes/1.0.0-beta-2
    releasenotes/1.0.0-beta-1
    releasenotes/1.0.0-alpha-3
