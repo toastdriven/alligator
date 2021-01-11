@@ -1,20 +1,11 @@
-import logging
 import os
-import signal
-import time
-import traceback
 
-from alligator.constants import ALL
+from alligator import daemons
 
 
-class Worker(object):
+class Worker(daemons.Daemon):
     def __init__(
-        self,
-        gator,
-        max_tasks=0,
-        to_consume=ALL,
-        nap_time=0.1,
-        log_level=logging.INFO,
+        self, gator, max_tasks=0, **kwargs,
     ):
         """
         An object for consuming the queue & running the tasks.
@@ -41,35 +32,10 @@ class Worker(object):
             log_level (int): Optional. The logging level you'd like for
                 output. Default is `logging.INFO`.
         """
-        self.gator = gator
+        super().__init__(gator, **kwargs)
         self.max_tasks = int(max_tasks)
-        self.to_consume = to_consume
-        self.nap_time = nap_time
         self.tasks_complete = 0
         self.keep_running = False
-        self.log_level = log_level
-        self.log = self.get_log(self.log_level)
-
-    def get_log(self, log_level=logging.INFO):
-        """
-        Sets up logging for the instance.
-
-        Args:
-            log_level (int): Optional. The logging level you'd like for
-                output. Default is `logging.INFO`.
-
-        Returns:
-            logging.Logger: The log instance.
-        """
-        log = logging.getLogger(__name__)
-        default_format = logging.Formatter(
-            "%(asctime)s %(name)s %(levelname)s %(message)s"
-        )
-        stdout_handler = logging.StreamHandler()
-        stdout_handler.setFormatter(default_format)
-        log.addHandler(stdout_handler)
-        log.setLevel(logging.INFO)
-        return log
 
     def ident(self):
         """
@@ -83,11 +49,8 @@ class Worker(object):
         """
         Prints a startup message to stdout.
         """
-        self.keep_running = True
+        super().starting()
         ident = self.ident()
-        self.log.info(
-            '{} starting & consuming "{}".'.format(ident, self.to_consume)
-        )
 
         if self.max_tasks:
             self.log.info(
@@ -95,30 +58,6 @@ class Worker(object):
             )
         else:
             self.log.info("{} will never die.".format(ident))
-
-    def interrupt(self):
-        """
-        Prints an interrupt message to stdout.
-        """
-        self.keep_running = False
-        ident = self.ident()
-        self.log.info(
-            '{} for "{}" saw interrupt. Finishing in-progress task.'.format(
-                ident, self.to_consume
-            )
-        )
-
-    def stopping(self):
-        """
-        Prints a shutdown message to stdout.
-        """
-        self.keep_running = False
-        ident = self.ident()
-        self.log.info(
-            '{} for "{}" shutting down. Consumed {} tasks.'.format(
-                ident, self.to_consume, self.tasks_complete
-            )
-        )
 
     def result(self, result):
         """
@@ -129,7 +68,7 @@ class Worker(object):
         if result is not None:
             self.log.info(result)
 
-    def check_and_run_task(self):
+    def busy_loop(self):
         """
         Handles the logic of checking for & executing a task.
 
@@ -141,6 +80,9 @@ class Worker(object):
             bool: `True` if a task was run successfully, `False` if there was
                 no task to process or executing the task failed.
         """
+        if self.max_tasks and self.tasks_complete >= self.max_tasks:
+            raise daemons.StopBusyLoop()
+
         if self.gator.len():
             try:
                 task = self.gator.pop()
@@ -157,26 +99,6 @@ class Worker(object):
 
         return False
 
-    def run_forever(self):
-        """
-        Causes the worker to run either forever or until the
-        `Worker.max_tasks` are reached.
-        """
-        self.starting()
-
-        def handle(signum, frame):
-            self.interrupt()
-
-        signal.signal(signal.SIGINT, handle)
-
-        while self.keep_running:
-            if self.max_tasks and self.tasks_complete >= self.max_tasks:
-                self.stopping()
-                break
-
-            self.check_and_run_task()
-
-            if self.nap_time >= 0:
-                time.sleep(self.nap_time)
-
-        return 0
+    def check_and_run_task(self):
+        # Deprecated: 1.X.X backward-compatibility.
+        return self.busy_loop()
