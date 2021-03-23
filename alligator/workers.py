@@ -10,6 +10,11 @@ class Worker(daemons.Daemon):
         """
         An object for consuming the queue & running the tasks.
 
+        This is a single-threaded/process object. It executes a single task
+        at a time & blocks until it is complete.
+
+        Nice & simple. Best suited for development or small setups.
+
         Ex::
 
             from alligator import Gator, Worker
@@ -19,18 +24,18 @@ class Worker(daemons.Daemon):
             worker.run_forever()
 
         Args:
-            gator (Gator): A configured `Gator` object
+            gator (Gator): A configured ``Gator`` object
             max_tasks (int): Optional. The maximum number of tasks to consume.
                 Useful if you're concerned about memory leaks or want
-                short-lived workers. Defaults to `0` (unlimited tasks).
+                short-lived workers. Defaults to ``0`` (unlimited tasks).
             to_consume (str): Optional. The queue name the worker should
-                consume from. Defaults to `ALL`.
+                consume from. Defaults to ``ALL``.
             nap_time (float): Optional. To prevent high CPU usage in the busy
                 loop, you can specify a time delay (in seconds) between
-                tasks. Set to `0` to disable sleep & consume as fast as
-                possible. Defaults to `0.1`
+                tasks. Set to ``0`` to disable sleep & consume as fast as
+                possible. Defaults to ``0.1``.
             log_level (int): Optional. The logging level you'd like for
-                output. Default is `logging.INFO`.
+                output. Default is ``logging.INFO``.
         """
         super().__init__(gator, **kwargs)
         self.max_tasks = int(max_tasks)
@@ -63,7 +68,8 @@ class Worker(daemons.Daemon):
         """
         Prints the received result from a task to stdout.
 
-        :param result: The result of the task
+        Args:
+            result (Any): The result of the task
         """
         if result is not None:
             self.log.info(result)
@@ -72,13 +78,13 @@ class Worker(daemons.Daemon):
         """
         Handles the logic of checking for & executing a task.
 
-        `Worker.run_forever` uses this in a loop to actually handle the main
+        ``Worker.run_forever`` uses this in a loop to actually handle the main
         logic, though you can call this on your own if you have different
         needs.
 
         Returns:
-            bool: `True` if a task was run successfully, `False` if there was
-                no task to process or executing the task failed.
+            bool: ``True`` if a task was run successfully, ``False`` if there
+                was no task to process or executing the task failed.
         """
         if self.max_tasks and self.tasks_complete >= self.max_tasks:
             raise daemons.StopBusyLoop()

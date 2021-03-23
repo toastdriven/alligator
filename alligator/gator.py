@@ -117,7 +117,7 @@ class Gator(object):
 
         return task
 
-    def pop(self):
+    def pop(self, execute=True):
         """
         Pops a task off the front of the queue & runs it.
 
@@ -131,6 +131,10 @@ class Gator(object):
             # machine...
             finished_topmost_task = gator.pop()
 
+        Args:
+            execute (bool): Optional. Whether to automatically run the task
+                immediately. Default is ``True``.
+
         Returns:
             Task: The completed ``Task`` instance
         """
@@ -138,9 +142,13 @@ class Gator(object):
 
         if data:
             task = self.task_class.deserialize(data)
+
+            if not execute:
+                return task
+
             return self.execute(task)
 
-    def get(self, task_id):
+    def get(self, task_id, execute=True):
         """
         Gets a specific task, by ``task_id`` off the queue & runs it.
 
@@ -156,6 +164,8 @@ class Gator(object):
 
         Args:
             task_id (str): The identifier of the task to process
+            execute (bool): Optional. Whether to automatically run the task
+                immediately. Default is ``True``.
 
         Returns:
             Task: The completed ``Task`` instance
@@ -164,6 +174,10 @@ class Gator(object):
 
         if data:
             task = self.task_class.deserialize(data)
+
+            if not execute:
+                return task
+
             return self.execute(task)
 
     def cancel(self, task_id):

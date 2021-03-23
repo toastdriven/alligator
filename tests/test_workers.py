@@ -80,6 +80,9 @@ class WorkerTestCase(unittest.TestCase):
     def test_check_and_run_task_trap_exception(self):
         self.assertEqual(read_file(), 0)
 
+        # Just for this test, let's bump up the `max_tasks`.
+        self.worker.max_tasks = 4
+
         self.gator.task(incr_file, 2)
         self.gator.task(incr_file, 3)
         self.gator.task(raise_error, 75)
@@ -105,18 +108,3 @@ class WorkerTestCase(unittest.TestCase):
         self.assertEqual(self.gator.backend.len("all"), 0)
         self.assertEqual(self.worker.tasks_complete, 3)
         self.assertEqual(read_file(), 9)
-
-    def test_run_forever(self):
-        self.assertEqual(read_file(), 0)
-
-        self.gator.task(incr_file, 2)
-        self.gator.task(incr_file, 3)
-        self.gator.task(incr_file, 4)
-
-        self.assertEqual(self.gator.backend.len("all"), 3)
-
-        # Should actually only run for two of the three tasks.
-        self.worker.run_forever()
-
-        self.assertEqual(self.gator.backend.len("all"), 1)
-        self.assertEqual(read_file(), 5)

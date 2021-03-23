@@ -1,10 +1,11 @@
 from .constants import WAITING, SUCCESS, FAILED, ALL
+from .daemons import Daemon
 from .gator import Gator
 from .tasks import Task
 from .workers import Worker
 
 __author__ = "Daniel Lindsley"
-__version__ = (1, 0, 0)
+__version__ = (1, 1, 0, "alpha", 1)
 __license__ = "BSD"
 
 
