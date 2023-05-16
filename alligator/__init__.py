@@ -1,4 +1,5 @@
 from .constants import WAITING, SUCCESS, FAILED, ALL
+from .coordinators import Coordinator
 from .daemons import Daemon
 from .gator import Gator
 from .tasks import Task
